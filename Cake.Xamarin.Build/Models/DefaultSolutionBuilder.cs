@@ -53,15 +53,7 @@ namespace Cake.Xamarin.Build
         protected virtual bool BuildsOnCurrentPlatform
         {
             get {
-                if (CakeContext.IsRunningOnUnix () &&
-                ((BuildsOn & BuildPlatforms.Linux) != 0 || (BuildsOn & BuildPlatforms.Mac) != 0))
-                    return true;
-
-                if (CakeContext.IsRunningOnWindows () &&
-                (BuildsOn & BuildPlatforms.Windows) != 0)
-                    return true;
-            
-                return false;
+                return BuildPlatformUtil.BuildsOnCurrentPlatform(CakeContext, BuildsOn);       
             }
         }
 
