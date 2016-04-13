@@ -155,7 +155,13 @@ namespace Cake.Xamarin.Build
             Task (Names.ComponentBase).IsDependentOn (Names.Nuget).Does (() => {
                 foreach (var c in buildSpec.Components)
                 {
-                    var outputDir = c.OutputDirectory ?? "./output/";
+                    if (!BuildPlatformUtil.BuildsOnCurrentPlatform (cake, c.BuildsOn))
+                    {
+                        cake.Warning("Component is not marked to build on current platform: {0}", c.ManifestDirectory.FullPath);
+                        continue;
+                    }
+
+                    var outputDir = c.OutputDirectory ?? "./output";
 
                     // Clear out existing .xam files
                     if (!cake.DirectoryExists(outputDir))
