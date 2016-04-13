@@ -8,6 +8,8 @@ namespace Cake.Xamarin.Build
         void CopyOutput ();
 
         ICakeContext CakeContext { get; }
-    }
+        BuildSpec BuildSpec { get; }
 
+        void Init(ICakeContext context, BuildSpec buildSpec);
+    }
 }

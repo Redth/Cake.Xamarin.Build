@@ -7,6 +7,8 @@ using Cake.Common;
 using Cake.Common.Tools.NuGet.Pack;
 using Cake.Common.Tools.NuGet;
 using Cake.Core.IO;
+using System.Collections.Generic;
+using System.Globalization;
 
 namespace Cake.Xamarin.Build
 {
@@ -43,7 +45,7 @@ namespace Cake.Xamarin.Build
                         .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
                         .Select(path => cake.FileSystem.GetDirectory(path))
                         .Where(path => path.Exists)
-                        .Select(path => path.Path.CombineWithFilePath("choco.exe"))
+                        .Select(path => path.Path.CombineWithFilePath("git.exe"))
                         .Select(cake.FileSystem.GetFile)
                         .FirstOrDefault(file => file.Exists);
 
@@ -89,35 +91,37 @@ namespace Cake.Xamarin.Build
             public const string CleanBase = "clean-base";
             public const string Clean = "clean";
         }
-
-        public static void SetupXamarinBuildTasks (IScriptHost scriptHost)
+        
+        public static void SetupXamarinBuildTasks (ICakeContext cake, BuildSpec buildSpec, IReadOnlyList<Cake.Core.CakeTask> tasks, Func<string, CakeTaskBuilder<ActionTask>> addTaskDelegate)
         {
-            var cake = scriptHost.Context;
+            buildSpec.Init(cake);
 
-            scriptHost.Task (Names.LibrariesBase).Does (() => {
-                    foreach (var l in CakeSpec.Libs) {
+            var Task = addTaskDelegate;
+
+            Task (Names.LibrariesBase).Does (() => {
+                    foreach (var l in buildSpec.Libs) {
                         l.BuildSolution ();
                         l.CopyOutput ();
                     }
                 });
 
-            if (!scriptHost.Tasks.Any (tsk => tsk.Name == Names.Libraries))
-                scriptHost.Task (Names.Libraries).IsDependentOn (Names.Externals).IsDependentOn (Names.LibrariesBase);
+            if (!tasks.Any (tsk => tsk.Name == Names.Libraries))
+                Task (Names.Libraries).IsDependentOn (Names.Externals).IsDependentOn (Names.LibrariesBase);
             
-            scriptHost.Task (Names.SamplesBase).Does (() => {
-                    foreach (var s in CakeSpec.Samples) {
+            Task (Names.SamplesBase).Does (() => {
+                    foreach (var s in buildSpec.Samples) {
                         s.BuildSolution ();
                         s.CopyOutput ();
                     }   
                 });
 
-            if (!scriptHost.Tasks.Any (tsk => tsk.Name == Names.Samples))
-                scriptHost.Task (Names.Samples).IsDependentOn (Names.Libraries).IsDependentOn (Names.SamplesBase);
+            if (!tasks.Any (tsk => tsk.Name == Names.Samples))
+                Task (Names.Samples).IsDependentOn (Names.Libraries).IsDependentOn (Names.SamplesBase);
 
-            scriptHost.Task (Names.NugetBase).Does (() => {
+            Task (Names.NugetBase).Does (() => {
                 var outputPath = "./output";
 
-                if (CakeSpec.NuGets == null || !CakeSpec.NuGets.Any ())
+                if (buildSpec.NuGets == null || !buildSpec.NuGets.Any ())
                     return;
 
                 // NuGet messes up path on mac, so let's add ./ in front twice
@@ -127,7 +131,7 @@ namespace Cake.Xamarin.Build
                     cake.CreateDirectory (outputPath);
                 }
 
-                foreach (var n in CakeSpec.NuGets) {
+                foreach (var n in buildSpec.NuGets) {
                     var settings = new NuGetPackSettings { 
                         Verbosity = NuGetVerbosity.Detailed,
                         OutputDirectory = outputPath,       
@@ -144,10 +148,10 @@ namespace Cake.Xamarin.Build
                 }
             });
 
-            if (!scriptHost.Tasks.Any (tsk => tsk.Name == Names.Nuget))
-                scriptHost.Task (Names.Nuget).IsDependentOn (Names.Libraries).IsDependentOn (Names.NugetBase);
+            if (!tasks.Any (tsk => tsk.Name == Names.Nuget))
+                Task (Names.Nuget).IsDependentOn (Names.Libraries).IsDependentOn (Names.NugetBase);
             
-            scriptHost.Task (Names.ComponentBase).IsDependentOn (Names.Nuget).Does (() => {
+            Task (Names.ComponentBase).IsDependentOn (Names.Nuget).Does (() => {
                 // Clear out existing .xam files
                 if (!cake.DirectoryExists ("./output/"))
                     cake.CreateDirectory ("./output/");
@@ -164,27 +168,27 @@ namespace Cake.Xamarin.Build
                 }
             });
 
-            if (!scriptHost.Tasks.Any (tsk => tsk.Name == Names.Component))
-                scriptHost.Task (Names.Component).IsDependentOn (Names.Nuget).IsDependentOn (Names.ComponentBase);
+            if (!tasks.Any (tsk => tsk.Name == Names.Component))
+                Task (Names.Component).IsDependentOn (Names.Nuget).IsDependentOn (Names.ComponentBase);
 
-            scriptHost.Task (Names.ExternalsBase).Does (() => {
-                if (CakeSpec.GitRepoDependencies == null || !CakeSpec.GitRepoDependencies.Any ())
+            Task (Names.ExternalsBase).Does (() => {
+                if (buildSpec.GitRepoDependencies == null || !buildSpec.GitRepoDependencies.Any ())
                     return;
 
                 var gitPath = ResolveGitPath (cake);
                 if (gitPath == null)
                     throw new System.IO.FileNotFoundException ("Could not locate git executable");
                 
-                foreach (var gitDep in CakeSpec.GitRepoDependencies) {
+                foreach (var gitDep in buildSpec.GitRepoDependencies) {
                     if (!cake.DirectoryExists (gitDep.Path))
                         cake.StartProcess (gitPath, "clone " + gitDep.Url + " " + cake.MakeAbsolute (gitDep.Path).FullPath);
                 }
             });
 
-            if (!scriptHost.Tasks.Any (tsk => tsk.Name == Names.Externals))
-                scriptHost.Task (Names.Externals).IsDependentOn (Names.ExternalsBase);
+            if (!tasks.Any (tsk => tsk.Name == Names.Externals))
+                Task (Names.Externals).IsDependentOn (Names.ExternalsBase);
 
-            scriptHost.Task (Names.CleanBase).Does (() => {
+            Task (Names.CleanBase).Does (() => {
                 cake.CleanDirectories ("./**/bin");
                 cake.CleanDirectories ("./**/obj");
 
@@ -194,8 +198,8 @@ namespace Cake.Xamarin.Build
                 if (cake.DirectoryExists ("./tosign"))
                     cake.DeleteDirectory ("./tosign", true);
 
-                if (CakeSpec.GitRepoDependencies != null && CakeSpec.GitRepoDependencies.Any ()) {
-                    foreach (var gitDep in CakeSpec.GitRepoDependencies) {
+                if (buildSpec.GitRepoDependencies != null && buildSpec.GitRepoDependencies.Any ()) {
+                    foreach (var gitDep in buildSpec.GitRepoDependencies) {
                         if (cake.DirectoryExists (gitDep.Path))
                             cake.DeleteDirectory (gitDep.Path, true);
                     }   
@@ -205,11 +209,11 @@ namespace Cake.Xamarin.Build
                     cake.DeleteDirectory ("./tools", true);
             });
 
-            if (!scriptHost.Tasks.Any (tsk => tsk.Name == Names.Clean))
-                scriptHost.Task (Names.Clean).IsDependentOn (Names.CleanBase);
+            if (!tasks.Any (tsk => tsk.Name == Names.Clean))
+                Task (Names.Clean).IsDependentOn (Names.CleanBase);
 
-            if (!scriptHost.Tasks.Any (tsk => tsk.Name == "Default"))
-                scriptHost.Task ("Default").IsDependentOn (Names.Libraries);
+            if (!tasks.Any (tsk => tsk.Name == "Default"))
+                Task ("Default").IsDependentOn (Names.Libraries);
         }
     }
 }

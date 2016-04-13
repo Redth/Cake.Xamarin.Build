@@ -7,7 +7,7 @@ namespace Cake.Xamarin.Build
 {
     public class IOSSolutionBuilder : DefaultSolutionBuilder
     {
-        public IOSSolutionBuilder (ICakeContext cakeContext) : base (cakeContext)
+        public IOSSolutionBuilder () : base ()
         {
             Platform = "iPhone";
         }

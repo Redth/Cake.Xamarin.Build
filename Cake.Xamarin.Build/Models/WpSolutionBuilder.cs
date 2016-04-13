@@ -9,7 +9,7 @@ namespace Cake.Xamarin.Build
 {
     public class WpSolutionBuilder : DefaultSolutionBuilder
     {
-        public WpSolutionBuilder (ICakeContext cakeContext) : base (cakeContext)
+        public WpSolutionBuilder () : base ()
         {
             BuildsOn = BuildPlatforms.Windows;
             Platform = "";

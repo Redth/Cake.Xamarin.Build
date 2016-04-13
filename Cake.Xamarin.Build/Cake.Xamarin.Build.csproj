@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -28,6 +28,10 @@
     <DocumentationFile>bin\Release\Cake.Xamarin.Build.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Cake.XCode, Version=1.0.5737.19016, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Cake.XCode.1.0.4\lib\net45\Cake.XCode.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="Cake.Core">
       <HintPath>..\packages\Cake.Core.0.10.1\lib\net45\Cake.Core.dll</HintPath>
@@ -44,7 +48,7 @@
     <Compile Include="Aliases.cs" />
     <Compile Include="Namespaces.cs" />
     <Compile Include="Models\OutputFileCopy.cs" />
-    <Compile Include="Models\CakeSpec.cs" />
+    <Compile Include="Models\BuildSpec.cs" />
     <Compile Include="Models\NuGetSource.cs" />
     <Compile Include="Models\NuGetInfo.cs" />
     <Compile Include="Models\GitRepository.cs" />
@@ -59,7 +63,5 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

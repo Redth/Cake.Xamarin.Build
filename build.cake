@@ -1,28 +1,28 @@
 var sln = "./Cake.Xamarin.Build.sln";
 var nuspec = "./Cake.Xamarin.Build.nuspec";
 
-var nugetVersion = "1.0.0";
+var nugetVersion = "1.0.4";
 
 var target = Argument ("target", "lib");
 
-Task ("lib").Does (() => 
+Task ("lib").Does (() =>
 {
 	NuGetRestore (sln);
 
 	DotNetBuild (sln, c => c.Configuration = "Release");
 });
 
-Task ("nuget").IsDependentOn ("lib").Does (() => 
+Task ("nuget").IsDependentOn ("lib").Does (() =>
 {
 	CreateDirectory ("./nupkg/");
 
-	NuGetPack (nuspec, new NuGetPackSettings { 
+	NuGetPack (nuspec, new NuGetPackSettings {
 		Verbosity = NuGetVerbosity.Detailed,
 		OutputDirectory = "./nupkg/",
 		Version = nugetVersion,
 		// NuGet messes up path on mac, so let's add ./ in front again
 		BasePath = "././",
-	});	
+	});
 });
 
 Task ("push").IsDependentOn ("nuget").Does (() =>
@@ -34,13 +34,13 @@ Task ("push").IsDependentOn ("nuget").Does (() =>
 
 	var apiKey = TransformTextFile ("./.nugetapikey").ToString ();
 
-	NuGetPush (newestNupkg, new NuGetPushSettings { 
+	NuGetPush (newestNupkg, new NuGetPushSettings {
 		Verbosity = NuGetVerbosity.Detailed,
 		ApiKey = apiKey
 	});
 });
 
-Task ("clean").Does (() => 
+Task ("clean").Does (() =>
 {
 	CleanDirectories ("./**/bin");
 	CleanDirectories ("./**/obj");

@@ -14,9 +14,8 @@ namespace Cake.Xamarin.Build
 {
     public class DefaultSolutionBuilder : ISolutionBuilder
     {
-        public DefaultSolutionBuilder (ICakeContext cakeContext)
+        public DefaultSolutionBuilder ()
         {
-            CakeContext = cakeContext;
             OutputDirectory = "./output";
             RestoreComponents = false;
             BuildsOn = BuildPlatforms.Mac;
@@ -25,7 +24,9 @@ namespace Cake.Xamarin.Build
             Properties = new Dictionary<string, List<string>> ();
         }
 
-        public ICakeContext CakeContext { get; private set; }
+        public BuildSpec BuildSpec { get; set; }
+
+        public ICakeContext CakeContext { get; set; }
 
         public string SolutionPath { get; set; }
 
@@ -42,6 +43,12 @@ namespace Cake.Xamarin.Build
 
         public Action PreBuildAction { get;set; }
         public Action PostBuildAction { get;set; }
+
+        public void Init (ICakeContext cakeContext, BuildSpec buildSpec)
+        {
+            CakeContext = cakeContext;
+            BuildSpec = buildSpec;
+        }
 
         protected virtual bool BuildsOnCurrentPlatform
         {
@@ -72,7 +79,7 @@ namespace Cake.Xamarin.Build
                 CakeContext.RestoreComponents (SolutionPath, new XamarinComponentRestoreSettings ());
 
             CakeContext.NuGetRestore (SolutionPath, new NuGetRestoreSettings { 
-                Source = CakeSpec.NuGetSources.Select (s => s.Url).ToList ()
+                Source = BuildSpec.NuGetSources.Select (s => s.Url).ToList ()
             });
 
             RunBuild (SolutionPath);
