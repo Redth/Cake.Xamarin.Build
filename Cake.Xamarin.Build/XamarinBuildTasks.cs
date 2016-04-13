@@ -120,22 +120,28 @@ namespace Cake.Xamarin.Build
                 Task (Names.Samples).IsDependentOn (Names.Libraries).IsDependentOn (Names.SamplesBase);
 
             Task (Names.NugetBase).Does (() => {
-                var outputPath = "./output";
-
+                
                 if (buildSpec.NuGets == null || !buildSpec.NuGets.Any ())
                     return;
 
                 // NuGet messes up path on mac, so let's add ./ in front twice
                 var basePath = cake.IsRunningOnUnix () ? "././" : "./";
 
-                if (!cake.DirectoryExists (outputPath)) {
-                    cake.CreateDirectory (outputPath);
-                }
-
                 foreach (var n in buildSpec.NuGets) {
+                    if (!BuildPlatformUtil.BuildsOnCurrentPlatform(cake, n.BuildsOn))
+                    {
+                        cake.Warning("Nuspec is not marked to build on current platform: {0}", n.NuSpec.FullPath);
+                        continue;
+                    }
+
+                    var outputDir = n.OutputDirectory ?? "./output";
+
+                    if (!cake.DirectoryExists(outputDir))
+                        cake.CreateDirectory(outputDir);
+                    
                     var settings = new NuGetPackSettings { 
                         Verbosity = NuGetVerbosity.Detailed,
-                        OutputDirectory = outputPath,       
+                        OutputDirectory = outputDir,       
                         BasePath = basePath
                     };
 
