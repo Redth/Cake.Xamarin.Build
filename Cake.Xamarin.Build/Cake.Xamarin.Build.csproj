@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{9F390A1D-29CB-4D80-84C6-EF7D1A283DD3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Cake.Xamarin.Build</RootNamespace>
+    <AssemblyName>Cake.Xamarin.Build</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <DocumentationFile>bin\Release\Cake.Xamarin.Build.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="Cake.Core">
+      <HintPath>..\packages\Cake.Core.0.10.1\lib\net45\Cake.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Cake.Common">
+      <HintPath>..\packages\Cake.Common.0.10.1\lib\net45\Cake.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Cake.Xamarin">
+      <HintPath>..\packages\Cake.Xamarin.1.3.0.1\lib\net45\Cake.Xamarin.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Aliases.cs" />
+    <Compile Include="Namespaces.cs" />
+    <Compile Include="Models\OutputFileCopy.cs" />
+    <Compile Include="Models\CakeSpec.cs" />
+    <Compile Include="Models\NuGetSource.cs" />
+    <Compile Include="Models\NuGetInfo.cs" />
+    <Compile Include="Models\GitRepository.cs" />
+    <Compile Include="Models\ISolutionBuilder.cs" />
+    <Compile Include="Models\BuildPlatforms.cs" />
+    <Compile Include="Models\DefaultSolutionBuilder.cs" />
+    <Compile Include="Models\IOSSolutionBuilder.cs" />
+    <Compile Include="Models\WpSolutionBuilder.cs" />
+    <Compile Include="XamarinBuildTasks.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+</Project>
