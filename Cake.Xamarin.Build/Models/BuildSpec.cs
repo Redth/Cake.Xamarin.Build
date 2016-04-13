@@ -9,6 +9,7 @@ namespace Cake.Xamarin.Build
         {
             Libs = new ISolutionBuilder [] {};
             Samples = new ISolutionBuilder [] {};
+            Components = new Component[] {};
             NuGets = new NuGetInfo [] {};
             NuGetSources = new NuGetSource[] {};
             GitRepoDependencies = new GitRepository[] {};
@@ -25,6 +26,7 @@ namespace Cake.Xamarin.Build
 
         public ISolutionBuilder[] Libs { get; set; }
         public ISolutionBuilder[] Samples { get; set; }
+        public Component[] Components { get; set; }
         public NuGetInfo[] NuGets { get; set; }
         public NuGetSource[] NuGetSources { get; set; }
         public GitRepository[] GitRepoDependencies { get;set; }

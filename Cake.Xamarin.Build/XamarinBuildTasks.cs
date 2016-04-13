@@ -9,6 +9,7 @@ using Cake.Common.Tools.NuGet;
 using Cake.Core.IO;
 using System.Collections.Generic;
 using System.Globalization;
+using Cake.Common.Diagnostics;
 
 namespace Cake.Xamarin.Build
 {
@@ -152,19 +153,25 @@ namespace Cake.Xamarin.Build
                 Task (Names.Nuget).IsDependentOn (Names.Libraries).IsDependentOn (Names.NugetBase);
             
             Task (Names.ComponentBase).IsDependentOn (Names.Nuget).Does (() => {
-                // Clear out existing .xam files
-                if (!cake.DirectoryExists ("./output/"))
-                    cake.CreateDirectory ("./output/");
-                cake.DeleteFiles ("./output/*.xam");
+                foreach (var c in buildSpec.Components)
+                {
+                    var outputDir = c.OutputDirectory ?? "./output/";
 
-                // Look for all the component.yaml files to build
-                var componentYamls = cake.GetFiles ("./**/component.yaml");
-                foreach (var yaml in componentYamls) {
-                    var yamlDir = yaml.GetDirectory ();
+                    // Clear out existing .xam files
+                    if (!cake.DirectoryExists(outputDir))
+                        cake.CreateDirectory(outputDir);
+                    cake.DeleteFiles(outputDir.FullPath.TrimEnd ('/') + "/*.xam");
 
-                    cake.PackageComponent (yamlDir, new XamarinComponentSettings ());
+                    var componentYaml = c.ManifestDirectory.CombineWithFilePath("component.yaml");
+                    if (!cake.FileExists (componentYaml))
+                    {
+                        cake.Warning("Component Manifest Missing: {0}", componentYaml.FullPath);
+                        continue;
+                    }
 
-                    cake.MoveFiles (yamlDir.FullPath.TrimEnd ('/') + "/*.xam", "./output/");
+                    cake.PackageComponent(c.ManifestDirectory, new XamarinComponentSettings());
+
+                    cake.MoveFiles(c.ManifestDirectory.FullPath.TrimEnd('/') + "/*.xam", outputDir);
                 }
             });
 
