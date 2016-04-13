@@ -5,8 +5,8 @@ namespace Cake.Xamarin.Build
     [Flags]
     public enum BuildPlatforms
     {
-        Mac = 0,
-        Windows = 1,
-        Linux = 2
+        Mac = 1,
+        Windows = 2,
+        Linux = 4
     }
 }
