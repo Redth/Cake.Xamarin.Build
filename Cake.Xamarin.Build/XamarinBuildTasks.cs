@@ -202,9 +202,6 @@ namespace Cake.Xamarin.Build
                 if (cake.DirectoryExists ("./output"))
                     cake.DeleteDirectory ("./output", true);
 
-                if (cake.DirectoryExists ("./tosign"))
-                    cake.DeleteDirectory ("./tosign", true);
-
                 if (buildSpec.GitRepoDependencies != null && buildSpec.GitRepoDependencies.Any ()) {
                     foreach (var gitDep in buildSpec.GitRepoDependencies) {
                         if (cake.DirectoryExists (gitDep.Path))
