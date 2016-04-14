@@ -11,6 +11,7 @@ using Cake.Common.IO;
 using Cake.XCode;
 using System.Text;
 using Cake.CocoaPods;
+using System.Net.Http;
 
 namespace Cake.Xamarin.Build
 {
@@ -275,6 +276,20 @@ namespace Cake.Xamarin.Build
             {
                 NoIntegrate = true
             });
+        }
+
+        [CakeMethodAlias]
+        public static void DownloadFile (this ICakeContext context, string url, FilePath downloadTo, DownloadFileSettings settings)
+        {
+            using (var http = new HttpClient())
+            {
+                if (settings != null && !string.IsNullOrEmpty(settings.UserAgent))
+                    http.DefaultRequestHeaders.Add("User-Agent", settings.UserAgent);
+
+                var progress = new HttpClientExtensions.DownloadFileProgressReporter (context);
+
+                http.DownloadFileAsync(new Uri(url), downloadTo.MakeAbsolute(context.Environment).FullPath, progress).Wait();
+            }
         }
     }
 }
