@@ -304,6 +304,7 @@ namespace Cake.Xamarin.Build
         /// </summary>
         /// <param name="context">The context.</param>
         /// <param name="nugets">The nugets to pack.</param>
+        [CakeMethodAlias]
         public static void PackNuGets (this ICakeContext context, params NuGetInfo[] nugets)
         {
             XamarinBuildTasks.PackNuGets(context, nugets);
