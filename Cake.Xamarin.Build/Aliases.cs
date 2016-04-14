@@ -278,6 +278,13 @@ namespace Cake.Xamarin.Build
             });
         }
 
+        /// <summary>
+        /// Downloads a file
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <param name="url">The url to download.</param>
+        /// <param name="downloadTo">The file to download to.</param>
+        /// <param name="settings">The download settings.</param>
         [CakeMethodAlias]
         public static void DownloadFile (this ICakeContext context, string url, FilePath downloadTo, DownloadFileSettings settings)
         {
