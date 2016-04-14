@@ -5,13 +5,13 @@ using System.Collections.Generic;
 
 namespace Cake.Xamarin.Tests.Fakes
 {
-    public class FakeCakeContext
+    public class FakeSession
     {
         ICakeContext context;
         FakeLog log;
         DirectoryPath testsDir;
 
-        public FakeCakeContext ()
+        public FakeSession ()
         {
             testsDir = new DirectoryPath (
                 System.IO.Path.GetFullPath (AppDomain.CurrentDomain.BaseDirectory));
