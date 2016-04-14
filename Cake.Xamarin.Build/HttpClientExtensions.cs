@@ -57,10 +57,18 @@ namespace Cake.Xamarin.Build
                 CakeContext = context;
             }
 
+            int lastValue = 0;
+
             public ICakeContext CakeContext { get; private set; }
             public void Report(int value)
             {
-                CakeContext.Information("Downloaded {0}...%", value);
+                if (value == lastValue)
+                    return;
+
+                lastValue = value;
+
+                if (value % 5 == 0)
+                    CakeContext.Information("Downloaded {0}...%", value);
             }
         }
     }
