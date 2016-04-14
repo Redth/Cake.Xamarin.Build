@@ -120,39 +120,7 @@ namespace Cake.Xamarin.Build
                 Task (Names.Samples).IsDependentOn (Names.Libraries).IsDependentOn (Names.SamplesBase);
 
             Task (Names.NugetBase).Does (() => {
-                
-                if (buildSpec.NuGets == null || !buildSpec.NuGets.Any ())
-                    return;
-
-                // NuGet messes up path on mac, so let's add ./ in front twice
-                var basePath = cake.IsRunningOnUnix () ? "././" : "./";
-
-                foreach (var n in buildSpec.NuGets) {
-                    if (!BuildPlatformUtil.BuildsOnCurrentPlatform(cake, n.BuildsOn))
-                    {
-                        cake.Warning("Nuspec is not marked to build on current platform: {0}", n.NuSpec.FullPath);
-                        continue;
-                    }
-
-                    var outputDir = n.OutputDirectory ?? "./output";
-
-                    if (!cake.DirectoryExists(outputDir))
-                        cake.CreateDirectory(outputDir);
-                    
-                    var settings = new NuGetPackSettings { 
-                        Verbosity = NuGetVerbosity.Detailed,
-                        OutputDirectory = outputDir,       
-                        BasePath = basePath
-                    };
-
-                    if (!string.IsNullOrEmpty (n.Version))
-                        settings.Version = n.Version;
-
-                    if (n.RequireLicenseAcceptance)
-                        settings.RequireLicenseAcceptance = n.RequireLicenseAcceptance;
-
-                    cake.NuGetPack (n.NuSpec, settings);
-                }
+                PackNuGets(cake, buildSpec.NuGets);
             });
 
             if (!tasks.Any (tsk => tsk.Name == Names.Nuget))
@@ -230,6 +198,44 @@ namespace Cake.Xamarin.Build
 
             if (!tasks.Any (tsk => tsk.Name == "Default"))
                 Task ("Default").IsDependentOn (Names.Libraries);
+        }
+
+        internal static void PackNuGets(ICakeContext cake, NuGetInfo[] nugets)
+        {
+            if (nugets == null || !nugets.Any())
+                return;
+
+            // NuGet messes up path on mac, so let's add ./ in front twice
+            var basePath = cake.IsRunningOnUnix() ? "././" : "./";
+
+            foreach (var n in nugets)
+            {
+                if (!BuildPlatformUtil.BuildsOnCurrentPlatform(cake, n.BuildsOn))
+                {
+                    cake.Warning("Nuspec is not marked to build on current platform: {0}", n.NuSpec.FullPath);
+                    continue;
+                }
+
+                var outputDir = n.OutputDirectory ?? "./output";
+
+                if (!cake.DirectoryExists(outputDir))
+                    cake.CreateDirectory(outputDir);
+
+                var settings = new NuGetPackSettings
+                {
+                    Verbosity = NuGetVerbosity.Detailed,
+                    OutputDirectory = outputDir,
+                    BasePath = basePath
+                };
+
+                if (!string.IsNullOrEmpty(n.Version))
+                    settings.Version = n.Version;
+
+                if (n.RequireLicenseAcceptance)
+                    settings.RequireLicenseAcceptance = n.RequireLicenseAcceptance;
+
+                cake.NuGetPack(n.NuSpec, settings);
+            }
         }
     }
 }

@@ -291,6 +291,16 @@ namespace Cake.Xamarin.Build
                 http.DownloadFileAsync(new Uri(url), downloadTo.MakeAbsolute(context.Environment).FullPath, progress).Wait();
             }
         }
+
+        /// <summary>
+        /// Packages the given NuGet (nuspec) information items
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <param name="nugets">The nugets to pack.</param>
+        public static void PackNuGets (this ICakeContext context, params NuGetInfo[] nugets)
+        {
+            XamarinBuildTasks.PackNuGets(context, nugets);
+        }
     }
 }
 
