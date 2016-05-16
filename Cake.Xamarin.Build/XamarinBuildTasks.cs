@@ -140,7 +140,7 @@ namespace Cake.Xamarin.Build
                     // Clear out existing .xam files
                     if (!cake.DirectoryExists(outputDir))
                         cake.CreateDirectory(outputDir);
-                    cake.DeleteFiles(outputDir.FullPath.TrimEnd ('/') + "/*.xam");
+                    // cake.DeleteFiles(outputDir.FullPath.TrimEnd ('/') + "/*.xam");
 
                     var componentYaml = c.ManifestDirectory.CombineWithFilePath("component.yaml");
                     if (!cake.FileExists (componentYaml))
