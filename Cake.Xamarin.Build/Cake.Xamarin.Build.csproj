@@ -62,15 +62,10 @@
     <Compile Include="Models\IOSSolutionBuilder.cs" />
     <Compile Include="Models\WpSolutionBuilder.cs" />
     <Compile Include="XamarinBuildTasks.cs" />
-    <Compile Include="ClassParse\EnumGenerator.cs" />
-    <Compile Include="ClassParse\ClassParseGenerator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <Folder Include="ClassParse\" />
-  </ItemGroup>
 </Project>
