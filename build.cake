@@ -1,7 +1,7 @@
 var sln = "./Cake.Xamarin.Build.sln";
 var nuspec = "./Cake.Xamarin.Build.nuspec";
 
-var nugetVersion = "1.0.4";
+var nugetVersion = "1.0.5";
 
 var target = Argument ("target", "lib");
 
