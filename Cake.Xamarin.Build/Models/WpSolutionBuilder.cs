@@ -4,6 +4,8 @@ using Cake.Core;
 using Cake.Common.Diagnostics;
 using Cake.Common;
 using Cake.Common.IO;
+using Cake.Common.Tools.MSBuild;
+using System.Linq;
 
 namespace Cake.Xamarin.Build
 {
@@ -13,9 +15,12 @@ namespace Cake.Xamarin.Build
         {
             BuildsOn = BuildPlatforms.Windows;
             Platform = "";
+            MSBuildPlatform = Cake.Common.Tools.MSBuild.MSBuildPlatform.x86;
         }
 
         public string WpPlatformTarget { get; set; }
+
+        public Cake.Common.Tools.MSBuild.MSBuildPlatform MSBuildPlatform { get; set; }
 
         public override void RunBuild (FilePath solution)
         {
@@ -24,25 +29,26 @@ namespace Cake.Xamarin.Build
                 return;
             }
 
-            var buildTargets = "";
-            if (Targets != null) {
-                foreach (var t in Targets)
-                    buildTargets += "/target:" + t + " ";
-            }
+            CakeContext.MSBuild(solution, c => {
 
-            // We need to invoke MSBuild manually for now since Cake wants to set Platform=x86 if we use the x86 msbuild.exe version
-            // and the amd64 msbuild.exe cannot be used to build windows phone projects
-            // This should be fixable in cake 0.6.1
-            var programFilesPath = CakeContext.Environment.GetSpecialPath(SpecialPath.ProgramFilesX86);
-            var binPath = programFilesPath.Combine(string.Concat("MSBuild/", "14.0", "/Bin"));
-            var msBuild = binPath.CombineWithFilePath("MSBuild.exe");
+                c.Configuration = Configuration;
+                c.MSBuildPlatform = MSBuildPlatform;
 
-            if (!CakeContext.FileExists (msBuild)) {
-                binPath = programFilesPath.Combine(string.Concat("MSBuild/", "12.0", "/Bin"));
-                msBuild = binPath.CombineWithFilePath("MSBuild.exe");
-            }
+                if (!string.IsNullOrEmpty(Platform))
 
-            CakeContext.StartProcess (msBuild, "/m /v:Normal /p:Configuration=Release " + buildTargets.Trim () + " \"" + CakeContext.MakeAbsolute (solution).ToString () + "\"");
+                    c.Properties["Platform"] = new[] { Platform };
+
+                if (Targets != null && Targets.Any ()) {
+                    foreach (var t in Targets)
+                        c.Targets.Add (t);
+                }
+
+                if (Properties != null && Properties.Any ()) {
+                    foreach (var kvp in Properties)
+                        c.Properties.Add (kvp.Key, kvp.Value);
+                }
+
+            });
         }
     }
 }
