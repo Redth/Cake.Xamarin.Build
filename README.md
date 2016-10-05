@@ -1,6 +1,7 @@
 # Cake.Xamarin.Build
-A set of aliases for http://cakebuild.net to help with Xamarin product builds.
+A set of aliases for http://cakebuild.net to help with building of Xamarin products.
 
+*NOTE:* This addin is not necessarily meant to be used or helpful to anyone outside of the Xamarin product builds, it's kept up solely for our own use.
 
 You can easily reference Cake.Xamarin.Build directly in your build script via a cake addin:
 
