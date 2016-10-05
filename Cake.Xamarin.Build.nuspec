@@ -6,15 +6,21 @@
       <authors>Redth</authors>
       <owners>Redth</owners>
       <title>Cake.Xamarin.Build</title>
-      <description>Cake Build addon to provide Aliases for Xamarin product build scripts.</description>
-      <summary>Cake Build addon to provide Aliases for Xamarin product build scripts.</summary>
+      <description>
+         NOT RECOMMENDED FOR PUBLIC USE: Cake Build addon to provide Aliases for Xamarin product build scripts.
+         
+         This addin exists to help with Xamarin product build scripts.  
+         
+         While you are free to use it, it is not recommended or supported for public use.  
+      </description>
+      <summary>NOT RECOMMENDED FOR PUBLIC USE: Cake Build addon to provide Aliases for Xamarin product build scripts.</summary>
       <licenseUrl>https://raw.githubusercontent.com/Redth/Cake.Xamarin.Build/master/LICENSE.md</licenseUrl>
       <projectUrl>https://github.com/Redth/Cake.Xamarin.Build</projectUrl>
       <iconUrl>https://raw.githubusercontent.com/Redth/Cake.Xamarin.Build/master/icon.png</iconUrl>
       <requireLicenseAcceptance>false</requireLicenseAcceptance>
       <copyright>Copyright (c) Xamarin 2015-2016</copyright>
       <releaseNotes>Initial Release</releaseNotes>
-      <tags>Cake Script Build</tags>
+      <tags></tags>
 
       <dependencies>
          <dependency id="Cake.Core" version="0.10.1" />
