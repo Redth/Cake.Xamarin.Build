@@ -5,6 +5,7 @@ using Cake.Common;
 using Cake.Common.Diagnostics;
 using Cake.Common.IO;
 using Cake.Common.Tools;
+using Cake.Common.Tools.MSBuild;
 using Cake.Common.Tools.NuGet;
 using Cake.Common.Tools.NuGet.Restore;
 using Cake.Core;
@@ -23,6 +24,8 @@ namespace Cake.Xamarin.Build
             Configuration = "Release";
             Properties = new Dictionary<string, List<string>> ();
         }
+
+        public int? MaxCpuCount { get; set; }
 
         public BuildSpec BuildSpec { get; set; }
 
@@ -82,19 +85,46 @@ namespace Cake.Xamarin.Build
 
         public virtual void RunBuild (FilePath solution)
         {
-            CakeContext.DotNetBuild (solution, c => { 
-                c.Configuration = Configuration; 
-                if (!string.IsNullOrEmpty (Platform))
-                    c.Properties ["Platform"] = new [] { Platform }; 
-                if (Targets != null && Targets.Any ()) {
-                    foreach (var t in Targets)
-                        c.Targets.Add (t);
-                }           
-                if (Properties != null && Properties.Any ()) {
-                    foreach (var kvp in Properties)
-                        c.Properties.Add (kvp.Key, kvp.Value);
-                }
-            }); 
+            if (CakeContext.IsRunningOnWindows())
+            {
+                CakeContext.MSBuild(solution, c =>
+                {
+                    if (MaxCpuCount.HasValue)
+                        c.SetMaxCpuCount(MaxCpuCount.Value);
+                    c.Configuration = Configuration;
+                    if (!string.IsNullOrEmpty(Platform))
+                       c.Properties["Platform"] = new[] { Platform };
+                    if (Targets != null && Targets.Any())
+                    {
+                       foreach (var t in Targets)
+                           c.Targets.Add(t);
+                    }
+                    if (Properties != null && Properties.Any())
+                    {
+                       foreach (var kvp in Properties)
+                           c.Properties.Add(kvp.Key, kvp.Value);
+                    }
+                });
+            }
+            else
+            {
+                CakeContext.DotNetBuild(solution, c =>
+                {
+                    c.Configuration = Configuration;
+                    if (!string.IsNullOrEmpty(Platform))
+                        c.Properties["Platform"] = new[] { Platform };
+                    if (Targets != null && Targets.Any())
+                    {
+                        foreach (var t in Targets)
+                            c.Targets.Add(t);
+                    }
+                    if (Properties != null && Properties.Any())
+                    {
+                        foreach (var kvp in Properties)
+                            c.Properties.Add(kvp.Key, kvp.Value);
+                    }
+                });
+            }
         }
 
         public virtual void CopyOutput ()

@@ -10,6 +10,8 @@ namespace Cake.Xamarin.Build
         ICakeContext CakeContext { get; }
         BuildSpec BuildSpec { get; }
 
+        int? MaxCpuCount { get; }
+
         void Init(ICakeContext context, BuildSpec buildSpec);
     }
 }
