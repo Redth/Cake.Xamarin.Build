@@ -192,6 +192,67 @@ namespace Cake.Xamarin.Build
             RunLipoCreate(context, workingDirectory, fatLibrary, i386, x86_64, armv7, armv7s, arm64);
         }
 
+        public static void BuildXCodeUniversalFramework (this ICakeContext context, FilePath xcodeProject, string target, string config = "Release")
+        {
+            var targetsSdks = new Dictionary<string, string> {
+                { "armv7", "iphoneos" },
+                { "armv7s", "iphoneos" },
+                { "arm64", "iphoneos" },
+                { "i386", "iphonesimulator" },
+                { "x86_64", "iphonesimulator" },
+            };
+
+            var projectDir = xcodeProject.GetDirectory ();
+            var libsToLipo = new List<FilePath> ();
+
+            // We need to build for all the target arch's and sdk's
+            foreach (var targetSdk in targetsSdks) {
+                // Build the framework
+                context.XCodeBuild (new XCodeBuildSettings {
+                    Project = xcodeProject.MakeAbsolute (context.Environment).FullPath,
+                    Target = target,
+                    Sdk = targetSdk.Value,
+                    Arch = targetSdk.Key,
+                    Configuration = config,
+                });
+
+                // Get the path to the built static library inside the framework
+                var staticLib = projectDir
+                    .Combine ("build")
+                    .Combine (config + "-" + targetSdk.Value)
+                    .Combine (target)
+                    .Combine (target + ".framework")
+                    .CombineWithFilePath (target);
+
+                var libToLipo = projectDir.CombineWithFilePath ("lib" + target + "-" + targetSdk.Key + ".a");
+
+                // Move the built static lib to a place where we can lipo it later
+                context.MoveFile (
+                    staticLib, 
+                    libToLipo);
+
+                libsToLipo.Add (libToLipo);
+            }
+
+            // Make sure the universal target dir exists
+            context.EnsureDirectoryExists (projectDir.Combine ("build").Combine ("universal"));
+
+            // Copy the framework contents from iphoneos to the universal folder 
+            // This gets us all the header files and such
+            context.CopyDirectory (projectDir.Combine ("build").Combine (config + "-iphoneos"),
+                                   projectDir.Combine ("build").Combine ("universal"));
+
+            // Lipo the separate static libs into one universal static lib, inside the universal framework
+            context.RunLipoCreate (
+                projectDir,
+                projectDir.Combine ("build")
+                    .Combine ("universal")
+                    .Combine (target)
+                    .Combine (target + ".framework")
+                    .CombineWithFilePath (target),
+                libsToLipo.ToArray ());
+        }
+
         /// <summary>
         /// Cleans an xcodeproj build, and removes any *.a static libraries
         /// </summary>
