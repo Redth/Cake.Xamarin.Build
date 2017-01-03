@@ -90,7 +90,7 @@ namespace Cake.Xamarin.Build
                 CakeContext.MSBuild(solution, c =>
                 {
                     if (MaxCpuCount.HasValue)
-                        c.SetMaxCpuCount(MaxCpuCount.Value);
+                        c.MaxCpuCount = MaxCpuCount.Value;
                     c.Configuration = Configuration;
                     if (!string.IsNullOrEmpty(Platform))
                        c.Properties["Platform"] = new[] { Platform };
