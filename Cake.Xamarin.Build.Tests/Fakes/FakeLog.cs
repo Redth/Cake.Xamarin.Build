@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Cake.Core.Diagnostics;
 
-namespace Cake.Xamarin.Tests.Fakes
+namespace Cake.Xamarin.Build.Tests.Fakes
 {
     /// <summary>
     /// Implementation of a <see cref="ICakeLog"/> that saves all messages written to it.
@@ -35,6 +36,11 @@ namespace Cake.Xamarin.Tests.Fakes
         {
             get { return Verbosity.Diagnostic; }
         }
+
+        Verbosity ICakeLog.Verbosity
+        {
+            get; set;
+        } = Verbosity.Diagnostic;
 
         /// <summary>
         /// Writes the text representation of the specified array of objects to the

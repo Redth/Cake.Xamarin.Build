@@ -1,6 +1,5 @@
 ﻿using Cake.Core;
 using Cake.Core.IO;
-using Cake.Xamarin.Tests.Fakes;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -8,23 +7,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cake.FileHelpers.Tests
+namespace Cake.Xamarin.Build.Tests.Fakes
 {
     [TestFixture]
     public abstract class TestFixtureBase
     {
-        public FakeSession Session { get; private set; }
+        FakeCakeContext context;
 
-        public ICakeContext Cake { get; private set; }
+        public ICakeContext Cake { get { return context.CakeContext; } }
 
         [SetUp]
-        public virtual void Setup()
+        public void Setup()
         {
-            Session = new FakeSession();
-            Cake = Session.CakeContext;
+            context = new FakeCakeContext();
 
             var dp = new DirectoryPath("./testdata");
-            var d = Session.CakeContext.FileSystem.GetDirectory(dp);
+            var d = context.CakeContext.FileSystem.GetDirectory(dp);
 
             if (d.Exists)
                 d.Delete(true);
@@ -33,9 +31,9 @@ namespace Cake.FileHelpers.Tests
         }
 
         [TearDown]
-        public virtual void Teardown()
+        public void Teardown()
         {
-            Session.DumpLogs();
+            context.DumpLogs();
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Cake.Core;
 
-namespace Cake.Xamarin.Tests.Fakes
+namespace Cake.Xamarin.Build.Tests.Fakes
 {
     internal sealed class FakeCakeArguments : ICakeArguments
     {

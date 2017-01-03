@@ -1,10 +1,9 @@
 ﻿using NUnit.Framework;
 using System;
-using Cake.Xamarin.Tests.Fakes;
 using Cake.Core.IO;
 using Cake.Xamarin.Build;
 
-namespace Cake.FileHelpers.Tests
+namespace Cake.Xamarin.Build.Tests.Fakes
 {
     [TestFixture]
     public class DownloadFileTests : TestFixtureBase

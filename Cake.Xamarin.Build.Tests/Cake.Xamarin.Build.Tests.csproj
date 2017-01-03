@@ -44,7 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Fakes\FakeCakeArguments.cs" />
-    <Compile Include="Fakes\FakeSession.cs" />
+    <Compile Include="Fakes\FakeCakeContext.cs" />
     <Compile Include="Fakes\FakeLog.cs" />
     <Compile Include="DownloadFileTests.cs" />
     <Compile Include="TestFixtureBase.cs" />
