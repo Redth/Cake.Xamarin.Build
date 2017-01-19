@@ -1,14 +1,13 @@
-﻿using NUnit.Framework;
+﻿using Xunit;
 using System;
 using Cake.Core.IO;
 using Cake.Xamarin.Build;
 
 namespace Cake.Xamarin.Build.Tests.Fakes
 {
-    [TestFixture]
     public class DownloadFileTests : TestFixtureBase
     {
-        [Test]
+		[Fact]
         public void Download_FacebookSDK ()
         {
             var url = "https://origincache.facebook.com/developers/resources/?id=FacebookSDKs-iOS-20160210.zip";
@@ -22,8 +21,8 @@ namespace Cake.Xamarin.Build.Tests.Fakes
             
             var fileInfo = new System.IO.FileInfo(destFile.MakeAbsolute(Cake.Environment).FullPath);
 
-            Assert.IsTrue(fileInfo.Exists);
-            Assert.Greater(fileInfo.Length, 1024);
+            Assert.True(fileInfo.Exists);
+			Assert.True (fileInfo.Length > 1024);
         }
     }
 }

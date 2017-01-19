@@ -35,6 +35,7 @@ namespace Cake.Xamarin.Build.Tests.Fakes
         public Verbosity Verbosity
         {
             get { return Verbosity.Diagnostic; }
+			set { }
         }
 
         Verbosity ICakeLog.Verbosity

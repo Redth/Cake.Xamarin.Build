@@ -1,6 +1,7 @@
 ﻿using Cake.Core;
 using Cake.Core.IO;
-using NUnit.Framework;
+using Cake.Xamarin.Tests.Fakes;
+using Xunit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,14 +10,17 @@ using System.Threading.Tasks;
 
 namespace Cake.Xamarin.Build.Tests.Fakes
 {
-    [TestFixture]
-    public abstract class TestFixtureBase
+    public abstract class TestFixtureBase : IDisposable
     {
         FakeCakeContext context;
 
         public ICakeContext Cake { get { return context.CakeContext; } }
 
-        [SetUp]
+		public TestFixtureBase()
+		{
+			Setup();
+		}
+
         public void Setup()
         {
             context = new FakeCakeContext();
@@ -30,8 +34,7 @@ namespace Cake.Xamarin.Build.Tests.Fakes
             d.Create();
         }
 
-        [TearDown]
-        public void Teardown()
+		public void Dispose()
         {
             context.DumpLogs();
         }
