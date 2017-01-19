@@ -1,13 +1,12 @@
 ﻿using Xunit.Sdk;
 using System;
-using Cake.Xamarin.Tests.Fakes;
 using Cake.Core.IO;
 using Cake.Xamarin.Build;
 using Xunit;
 
-namespace Cake.FileHelpers.Tests
+namespace Cake.Xamarin.Build.Tests
 {
-    public class BuildEnvironmentTests : TestFixtureBase
+    public class BuildEnvironmentTests : Cake.Xamarin.Build.Tests.Fakes.TestFixtureBase
     {
         [Fact]
         public void GetXamarinAndroidVersion()
