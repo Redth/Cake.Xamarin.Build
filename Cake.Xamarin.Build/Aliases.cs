@@ -487,8 +487,12 @@ namespace Cake.Xamarin.Build
 
 		static PlatformFamily GetOperatingSystem(this ICakeContext context)
 		{
-			if (NativeHelpers.IsRunningOnMac())
-				return PlatformFamily.OSX;
+			try
+			{
+				if (NativeHelpers.IsRunningOnMac())
+					return PlatformFamily.OSX;
+			}
+			catch { }
 			
 			return context.Environment.Platform.Family;
 		}
