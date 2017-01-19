@@ -12,6 +12,7 @@ using Cake.XCode;
 using System.Text;
 using Cake.CocoaPods;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 
 namespace Cake.Xamarin.Build
 {
@@ -369,6 +370,148 @@ namespace Cake.Xamarin.Build
         public static void PackNuGets (this ICakeContext context, params NuGetInfo[] nugets)
         {
             XamarinBuildTasks.PackNuGets(context, nugets);
+        }
+
+        [CakeMethodAlias]
+        public static BuildEnvironment GetBuildEnvironmentInfo(this ICakeContext context)
+        {
+            var info = new BuildEnvironment();
+
+            info.XCodeVersion = GetXCodeVersion(context);
+            info.CocoaPodsVersion = GetCocoaPodsVersion(context);
+            info.XamarinAndroidVersion = GetXamarinAndroidVersion(context);
+            info.XamariniOSVersion = GetXamariniOSVersion(context);
+            info.OperatingSystem = GetOperatingSystem(context);
+			info.OperatingSystemName = GetOperatingSystemName(context);
+            info.OperatingSystemVersion = GetOperatingSystemVersion(context);
+
+            return info;
+        }
+
+
+        public static string GetXCodeVersion(this ICakeContext context)
+        {
+            if (context.IsRunningOnWindows())
+                return null;
+
+            var firstLine = RunExternalProcess(context, "/usr/bin/xcodebuild", "-version")?.FirstOrDefault()?.Trim ();
+
+            return Regex.Split(firstLine ?? string.Empty, "\\s+")
+                        ?.Skip(1)?.FirstOrDefault();
+        }
+
+        public static string GetCocoaPodsVersion(this ICakeContext context)
+        {
+            if (context.IsRunningOnWindows())
+                return null;
+
+            return RunExternalProcess(context, "pod", "--version")?.FirstOrDefault()?.Trim ();
+        }
+
+
+        public static string GetMacOSVersion(this ICakeContext context)
+        {
+            if (context.IsRunningOnWindows())
+                return null;
+
+            var productVersion = RunExternalProcess(context, "/usr/bin/sw_vers", "-productVersion")?.FirstOrDefault()?.Trim ();
+            var buildVersion = RunExternalProcess(context, "/usr/bin/sw_vers", "-buildVersion")?.FirstOrDefault()?.Trim ();
+
+            if (productVersion == null && buildVersion == null)
+                return null;
+
+            return productVersion ?? "?" + "." + buildVersion ?? "?";
+        }
+
+        public static string GetOperatingSystemName(this ICakeContext context)
+        {
+			switch (context.Environment.Platform.Family)
+			{
+				case PlatformFamily.Linux:
+					return "Linux";
+				case PlatformFamily.OSX:
+					return "MacOS";
+				case PlatformFamily.Windows:
+					return "Windows";
+			}
+            return "Unix";
+        }
+
+
+		public static PlatformFamily GetOperatingSystem(this ICakeContext context)
+		{
+			return context.Environment.Platform.Family;
+		}
+
+        public static string GetOperatingSystemVersion(this ICakeContext context)
+        {
+            if (context.IsRunningOnWindows())
+                return GetWindowsVersion(context);
+
+			if (context.Environment.Platform.Family == PlatformFamily.OSX)
+				return GetMacOSVersion(context);
+
+            return System.Environment.OSVersion.Version.ToString();
+        }
+
+
+        public static string GetWindowsVersion(this ICakeContext context)
+        {
+            if (!context.IsRunningOnWindows())
+                return null;
+
+            return System.Environment.OSVersion.Version.ToString();
+        }
+
+
+        public static string GetXamarinAndroidVersion(this ICakeContext context)
+        {
+            var versionFile = "/Library/Frameworks/Xamarin.Android.framework/Versions/Current/Version";
+            var revisionFile = "/Library/Frameworks/Xamarin.Android.framework/Versions/Current/Version.rev";
+
+            if (context.IsRunningOnWindows ())
+            {
+                versionFile = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFilesX86), "MSBuild", "Xamarin", "Android", "Version");
+                revisionFile = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFilesX86), "MSBuild", "Xamarin", "Android", "Version.rev");
+            }
+
+            var version = System.IO.File.ReadAllText(versionFile)?.Trim();
+            var revision = System.IO.File.ReadAllText(revisionFile)?.Trim();
+
+            if (version == null && revision == null)
+                return null;
+            
+            return version ?? "?" + "." + revision ?? "?";
+        }
+
+        public static string GetXamariniOSVersion(this ICakeContext context)
+        {
+            var versionFile = "/Library/Frameworks/Xamarin.iOS.framework/Versions/Current/Version";
+
+            if (context.IsRunningOnWindows())
+                versionFile = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFilesX86), "MSBuild", "Xamarin", "Android", "Version");
+
+            var version = System.IO.File.ReadAllText(versionFile)?.Trim();
+
+            return version;
+        }
+
+        static IEnumerable<string> RunExternalProcess(ICakeContext context, FilePath processPath, params string[] args)
+        {
+            var pab = new ProcessArgumentBuilder();
+
+            foreach (var a in args)
+                pab.Append(a);
+
+            IEnumerable<string> procOutput = new List<string>();
+
+            context.StartProcess(processPath, new ProcessSettings
+            {
+                Arguments = pab,
+                RedirectStandardOutput = true,
+            }, out procOutput);
+
+            return procOutput;
         }
     }
 }

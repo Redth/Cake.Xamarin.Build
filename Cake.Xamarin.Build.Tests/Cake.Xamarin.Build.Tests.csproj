@@ -54,6 +54,7 @@
     <Compile Include="Fakes\FakeLog.cs" />
     <Compile Include="DownloadFileTests.cs" />
     <Compile Include="TestFixtureBase.cs" />
+    <Compile Include="BuildEnvironmentTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
