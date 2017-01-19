@@ -470,7 +470,9 @@ namespace Cake.Xamarin.Build
 
         static string GetOperatingSystemName(this ICakeContext context)
         {
-			switch (context.Environment.Platform.Family)
+			var pf = GetOperatingSystem(context);
+
+			switch (pf)
 			{
 				case PlatformFamily.Linux:
 					return "Linux";
@@ -485,6 +487,9 @@ namespace Cake.Xamarin.Build
 
 		static PlatformFamily GetOperatingSystem(this ICakeContext context)
 		{
+			if (NativeHelpers.IsRunningOnMac())
+				return PlatformFamily.OSX;
+			
 			return context.Environment.Platform.Family;
 		}
 
@@ -493,7 +498,7 @@ namespace Cake.Xamarin.Build
             if (context.IsRunningOnWindows())
                 return GetWindowsVersion(context);
 
-			if (context.Environment.Platform.Family == PlatformFamily.OSX)
+			if (GetOperatingSystem(context) == PlatformFamily.OSX)
 				return GetMacOSVersion(context);
 
             return System.Environment.OSVersion.Version.ToString();

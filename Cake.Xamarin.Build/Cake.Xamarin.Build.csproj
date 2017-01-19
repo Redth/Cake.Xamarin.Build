@@ -66,6 +66,7 @@
     <Compile Include="Models\WpSolutionBuilder.cs" />
     <Compile Include="XamarinBuildTasks.cs" />
     <Compile Include="Models\SystemInfo.cs" />
+    <Compile Include="NativeHelpers.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
