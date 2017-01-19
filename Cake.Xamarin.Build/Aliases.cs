@@ -475,8 +475,12 @@ namespace Cake.Xamarin.Build
                 revisionFile = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFilesX86), "MSBuild", "Xamarin", "Android", "Version.rev");
             }
 
-            var version = System.IO.File.ReadAllText(versionFile)?.Trim();
-            var revision = System.IO.File.ReadAllText(revisionFile)?.Trim();
+			string version = null;
+			if (System.IO.File.Exists (versionFile))
+				version = System.IO.File.ReadAllText(versionFile)?.Trim();
+			string revision = null;
+			if (System.IO.File.Exists (revisionFile))
+				revision = System.IO.File.ReadAllText(revisionFile)?.Trim();
 
             if (version == null && revision == null)
                 return null;
@@ -491,6 +495,9 @@ namespace Cake.Xamarin.Build
             if (context.IsRunningOnWindows())
                 versionFile = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFilesX86), "MSBuild", "Xamarin", "Android", "Version");
 
+			if (!System.IO.File.Exists(versionFile))
+				return null;
+			
             var version = System.IO.File.ReadAllText(versionFile)?.Trim();
 
             return version;
