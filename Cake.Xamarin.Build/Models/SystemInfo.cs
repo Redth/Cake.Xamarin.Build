@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 namespace Cake.Xamarin.Build
 {
-    public class BuildEnvironment
+    public class SystemInfo
     {
         public string XCodeVersion { get; set; }
         public string CocoaPodsVersion { get; set; }

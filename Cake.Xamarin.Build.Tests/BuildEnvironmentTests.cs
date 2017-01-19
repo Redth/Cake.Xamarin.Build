@@ -1,4 +1,4 @@
-﻿using Xunit.Sdk;
+using Xunit.Sdk;
 using System;
 using Cake.Core.IO;
 using Cake.Xamarin.Build;
@@ -11,7 +11,7 @@ namespace Cake.Xamarin.Build.Tests
 		[Fact]
 		public void GetBuildInfo()
 		{
-			var b = Cake.GetBuildEnvironmentInfo();
+			var b = Cake.GetSystemInfo();
 
 			Assert.NotNull(b.OperatingSystemName);
 			Assert.NotNull(b.OperatingSystemVersion);

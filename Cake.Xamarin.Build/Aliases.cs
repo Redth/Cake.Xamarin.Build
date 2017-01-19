@@ -372,10 +372,15 @@ namespace Cake.Xamarin.Build
             XamarinBuildTasks.PackNuGets(context, nugets);
         }
 
+		/// <summary>
+		/// Gets System Information, versions of tools, etc.
+		/// </summary>
+		/// <returns>The system info.</returns>
+		/// <param name="context">Context.</param>
         [CakeMethodAlias]
-        public static BuildEnvironment GetBuildEnvironmentInfo(this ICakeContext context)
+        public static SystemInfo GetSystemInfo(this ICakeContext context)
         {
-            var info = new BuildEnvironment();
+            var info = new SystemInfo();
 
             info.XCodeVersion = GetXCodeVersion(context);
             info.CocoaPodsVersion = GetCocoaPodsVersion(context);
@@ -388,8 +393,48 @@ namespace Cake.Xamarin.Build
             return info;
         }
 
+		/// <summary>
+		/// Logs System Information
+		/// </summary>
+		/// <param name="context">Context.</param>
+		[CakeMethodAlias]
+		public static void LogSystemInfo(this ICakeContext context)
+		{
+			var info = GetSystemInfo(context);
 
-        public static string GetXCodeVersion(this ICakeContext context)
+			logInfo(context, "------------------------------");
+			logInfo(context, "      System Information      ");
+			logInfo(context, "------------------------------");
+
+
+			logInfo(context, "Operating System:      {0}", info.OperatingSystemName);
+			logInfo(context, "OS Version:            {0}\r\n", info.OperatingSystemVersion);
+
+			logInfo(context, "Xamarin.Android:       {0}", info.XamarinAndroidVersion ?? "Not Detected");
+			logInfo(context, "Xamarin.iOS:           {0}\r\n", info.OperatingSystemName ?? "Not Detected");
+
+			if (info.OperatingSystem == PlatformFamily.OSX)
+			{
+				logInfo(context, "XCode Version:         {0}", info.XCodeVersion ?? "Not Detected");
+				logInfo(context, "CocoaPods Version:     {0}", info.CocoaPodsVersion ?? "Not Detected");
+			}
+
+			logInfo(context, "------------------------------");
+			logInfo(context, "------------------------------");
+		}
+
+		static void logInfo(ICakeContext context, string format, params object[] args)
+		{
+			context.Log.Write(Core.Diagnostics.Verbosity.Normal, Core.Diagnostics.LogLevel.Information,format, args);
+		}
+
+		static void logInfo(ICakeContext context, string msg)
+		{
+			context.Log.Write(Core.Diagnostics.Verbosity.Normal, Core.Diagnostics.LogLevel.Information, msg);
+		}
+
+
+        static string GetXCodeVersion(this ICakeContext context)
         {
             if (context.IsRunningOnWindows())
                 return null;
@@ -400,7 +445,7 @@ namespace Cake.Xamarin.Build
                         ?.Skip(1)?.FirstOrDefault();
         }
 
-        public static string GetCocoaPodsVersion(this ICakeContext context)
+        static string GetCocoaPodsVersion(this ICakeContext context)
         {
             if (context.IsRunningOnWindows())
                 return null;
@@ -409,7 +454,7 @@ namespace Cake.Xamarin.Build
         }
 
 
-        public static string GetMacOSVersion(this ICakeContext context)
+        static string GetMacOSVersion(this ICakeContext context)
         {
             if (context.IsRunningOnWindows())
                 return null;
@@ -423,7 +468,7 @@ namespace Cake.Xamarin.Build
             return productVersion ?? "?" + "." + buildVersion ?? "?";
         }
 
-        public static string GetOperatingSystemName(this ICakeContext context)
+        static string GetOperatingSystemName(this ICakeContext context)
         {
 			switch (context.Environment.Platform.Family)
 			{
@@ -438,12 +483,12 @@ namespace Cake.Xamarin.Build
         }
 
 
-		public static PlatformFamily GetOperatingSystem(this ICakeContext context)
+		static PlatformFamily GetOperatingSystem(this ICakeContext context)
 		{
 			return context.Environment.Platform.Family;
 		}
 
-        public static string GetOperatingSystemVersion(this ICakeContext context)
+        static string GetOperatingSystemVersion(this ICakeContext context)
         {
             if (context.IsRunningOnWindows())
                 return GetWindowsVersion(context);
@@ -455,7 +500,7 @@ namespace Cake.Xamarin.Build
         }
 
 
-        public static string GetWindowsVersion(this ICakeContext context)
+        static string GetWindowsVersion(this ICakeContext context)
         {
             if (!context.IsRunningOnWindows())
                 return null;
@@ -464,7 +509,7 @@ namespace Cake.Xamarin.Build
         }
 
 
-        public static string GetXamarinAndroidVersion(this ICakeContext context)
+        static string GetXamarinAndroidVersion(this ICakeContext context)
         {
             var versionFile = "/Library/Frameworks/Xamarin.Android.framework/Versions/Current/Version";
             var revisionFile = "/Library/Frameworks/Xamarin.Android.framework/Versions/Current/Version.rev";
@@ -488,7 +533,7 @@ namespace Cake.Xamarin.Build
             return version ?? "?" + "." + revision ?? "?";
         }
 
-        public static string GetXamariniOSVersion(this ICakeContext context)
+        static string GetXamariniOSVersion(this ICakeContext context)
         {
             var versionFile = "/Library/Frameworks/Xamarin.iOS.framework/Versions/Current/Version";
 
@@ -503,7 +548,7 @@ namespace Cake.Xamarin.Build
             return version;
         }
 
-        static IEnumerable<string> RunExternalProcess(ICakeContext context, FilePath processPath, params string[] args)
+		static IEnumerable<string> RunExternalProcess(ICakeContext context, FilePath processPath, params string[] args)
         {
             var pab = new ProcessArgumentBuilder();
 
