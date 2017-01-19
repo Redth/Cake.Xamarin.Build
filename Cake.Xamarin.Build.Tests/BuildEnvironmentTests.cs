@@ -45,7 +45,10 @@ namespace Cake.Xamarin.Build.Tests
 		{
 			var version = Cake.GetCocoaPodsVersion();
 
-			Assert.NotNull(version);
+			if (Cake.GetOperatingSystem () == Core.PlatformFamily.OSX)
+				Assert.NotNull(version);
+			else
+				Assert.Null(version);
 		}
 
 		[Fact]
