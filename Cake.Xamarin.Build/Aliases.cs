@@ -411,7 +411,7 @@ namespace Cake.Xamarin.Build
 			logInfo(context, "OS Version:            {0}\r\n", info.OperatingSystemVersion);
 
 			logInfo(context, "Xamarin.Android:       {0}", info.XamarinAndroidVersion ?? "Not Detected");
-			logInfo(context, "Xamarin.iOS:           {0}\r\n", info.OperatingSystemName ?? "Not Detected");
+			logInfo(context, "Xamarin.iOS:           {0}\r\n", info.XamariniOSVersion ?? "Not Detected");
 
 			if (info.OperatingSystem == PlatformFamily.OSX)
 			{
