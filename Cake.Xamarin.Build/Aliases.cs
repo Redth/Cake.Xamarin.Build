@@ -420,7 +420,6 @@ namespace Cake.Xamarin.Build
 			}
 
 			logInfo(context, "------------------------------");
-			logInfo(context, "------------------------------");
 		}
 
 		static void logInfo(ICakeContext context, string format, params object[] args)
@@ -485,7 +484,13 @@ namespace Cake.Xamarin.Build
         }
 
 
-		static PlatformFamily GetOperatingSystem(this ICakeContext context)
+		/// <summary>
+		/// Gets the type of Operating System
+		/// </summary>
+		/// <returns>The operating system.</returns>
+		/// <param name="context">Context.</param>
+		[CakeMethodAlias]
+		public static PlatformFamily GetOperatingSystem(this ICakeContext context)
 		{
 			try
 			{
