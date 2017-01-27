@@ -1,13 +1,13 @@
-﻿using Xunit;
-using System;
+﻿using System;
 using Cake.Core.IO;
 using Cake.Xamarin.Build;
+using NUnit.Framework;
 
 namespace Cake.Xamarin.Build.Tests.Fakes
 {
     public class DownloadFileTests : TestFixtureBase
     {
-		[Fact]
+		[Test]
         public void Download_FacebookSDK ()
         {
             var url = "https://origincache.facebook.com/developers/resources/?id=FacebookSDKs-iOS-20160210.zip";
