@@ -43,6 +43,7 @@ namespace Cake.Xamarin.Build
         public OutputFileCopy [] OutputFiles { get; set; }
         public virtual string OutputDirectory { get; set; }
         public virtual bool RestoreComponents { get; set; }
+		public virtual bool AlwaysUseMSBuild { get; set; } = false;
 
         public Action PreBuildAction { get;set; }
         public Action PostBuildAction { get;set; }
@@ -85,10 +86,13 @@ namespace Cake.Xamarin.Build
 
         public virtual void RunBuild (FilePath solution)
         {
-            if (CakeContext.IsRunningOnWindows())
+            if (CakeContext.IsRunningOnWindows() || AlwaysUseMSBuild)
             {
                 CakeContext.MSBuild(solution, c =>
                 {
+                    if (CakeContext.GetOperatingSystem() == PlatformFamily.OSX)
+                        c.ToolPath = "/Library/Frameworks/Mono.framework/Versions/Current/Commands/msbuild";
+
                     if (MaxCpuCount.HasValue)
                         c.MaxCpuCount = MaxCpuCount.Value;
                     c.Configuration = Configuration;
