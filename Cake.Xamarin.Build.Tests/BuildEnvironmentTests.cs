@@ -2,13 +2,13 @@ using Xunit.Sdk;
 using System;
 using Cake.Core.IO;
 using Cake.Xamarin.Build;
-using Xunit;
+using NUnit.Framework;
 
 namespace Cake.Xamarin.Build.Tests
 {
-    public class BuildEnvironmentTests : Cake.Xamarin.Build.Tests.Fakes.TestFixtureBase
-    {
-		[Fact]
+	public class BuildEnvironmentTests : Cake.Xamarin.Build.Tests.Fakes.TestFixtureBase
+	{
+		[Test]
 		public void GetBuildInfo()
 		{
 			var b = Cake.GetSystemInfo();
@@ -25,6 +25,6 @@ namespace Cake.Xamarin.Build.Tests
 				Assert.NotNull(b.XCodeVersion);
 			}
 		}
-    }
+	}
 }
 

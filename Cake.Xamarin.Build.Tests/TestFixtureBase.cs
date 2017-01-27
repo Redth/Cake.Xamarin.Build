@@ -6,36 +6,41 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NUnit.Framework;
 
 namespace Cake.Xamarin.Build.Tests.Fakes
 {
-    public abstract class TestFixtureBase : IDisposable
-    {
-        FakeCakeContext context;
+	[TestFixture]
+	public abstract class TestFixtureBase
+	{
+		FakeCakeContext context;
 
-        public ICakeContext Cake { get { return context.CakeContext; } }
+		public ICakeContext Cake { get { return context.CakeContext; } }
 
-		public TestFixtureBase()
+		[OneTimeSetUp]
+		public void RunBeforeAnyTests()
 		{
-			Setup();
+			Environment.CurrentDirectory = System.IO.Path.GetDirectoryName(typeof(TestFixtureBase).Assembly.Location);
 		}
 
-        public void Setup()
-        {
-            context = new FakeCakeContext();
+		[SetUp]
+		public void Setup()
+		{
+			context = new FakeCakeContext();
 
-            var dp = new DirectoryPath("./testdata");
-            var d = context.CakeContext.FileSystem.GetDirectory(dp);
+			var dp = new DirectoryPath("./testdata");
+			var d = context.CakeContext.FileSystem.GetDirectory(dp);
 
-            if (d.Exists)
-                d.Delete(true);
+			if (d.Exists)
+				d.Delete(true);
 
-            d.Create();
-        }
+			d.Create();
+		}
 
-		public void Dispose()
-        {
-            context.DumpLogs();
-        }
-    }
+		[TearDown]
+		public void Teardown()
+		{
+			context.DumpLogs();
+		}
+	}
 }
