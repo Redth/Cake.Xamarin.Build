@@ -579,6 +579,34 @@ namespace Cake.Xamarin.Build
 
             return procOutput;
         }
-    }
-}
 
+		/// <summary>
+		/// Finds information about every entry in a given zip file, including file offsets within the zip
+		/// </summary>
+		/// <param name="context">Context.</param>
+		/// <param name="zipFile">Zip file.</param>
+		[CakeMethodAlias]
+		public static List<ZipEntryInfo> FindZipEntries(this ICakeContext context, FilePath zipFile)
+		{
+			var zipFilename = zipFile.MakeAbsolute(context.Environment).FullPath;
+
+			return PartialZip.FindZipFileRanges(zipFilename);
+		}
+
+
+		/// <summary>
+		/// Reads the context of an entry in a zip file as a string
+		/// </summary>
+		/// <param name="context">Context.</param>
+		/// <param name="zipFile">Zip file.</param>
+		/// <param name="zipEntryName">Entry in zip file to read.</param>
+		/// <param name="readBinaryAsHex">If true, return the string as a hexadecimal representation of the raw file data.</param>
+		[CakeMethodAlias]
+		public static string ReadZipEntryText(this ICakeContext context, FilePath zipFile, string zipEntryName, bool readBinaryAsHex = false)
+		{
+			var zipFilename = zipFile.MakeAbsolute(context.Environment).FullPath;
+
+			return PartialZip.ReadEntryText(zipFilename, zipEntryName, readBinaryAsHex);
+		}
+	}
+}
