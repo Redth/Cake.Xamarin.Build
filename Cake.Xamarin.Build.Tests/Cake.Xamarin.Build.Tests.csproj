@@ -58,6 +58,7 @@
     <Compile Include="DownloadFileTests.cs" />
     <Compile Include="TestFixtureBase.cs" />
     <Compile Include="BuildEnvironmentTests.cs" />
+    <Compile Include="ZipTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

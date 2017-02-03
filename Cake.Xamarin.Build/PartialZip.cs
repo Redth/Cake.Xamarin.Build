@@ -20,51 +20,41 @@ namespace Cake.Xamarin.Build
 
 	internal static class PartialZip
 	{
-		internal static Stream ReadZipEntry(string zipFilename, string entryName)
+		internal static string ReadEntryText(string zipFilename, string entryName, bool readBinaryAsHex = false)
 		{
 			using (var fs = File.OpenRead(zipFilename))
 			using (var zipFile = new ZipFile(fs))
 			{
 				var entry = zipFile.GetEntry(entryName);
 
-				if (entry != null)
-					return zipFile.GetInputStream(entry);
-
-
-			}
-
-			return null;
-		}
-
-		internal static string ReadEntryText(string zipFilename, string entryName, bool readBinaryAsHex = false)
-		{
-			using (var entryStream = ReadZipEntry(zipFilename, entryName))
-			{
-				if (entryStream == null)
+				if (entry == null)
 					return null;
 
-				if (readBinaryAsHex)
+				using (var entryStream = zipFile.GetInputStream(entry))
 				{
-					using (var ms = new MemoryStream())
+					if (readBinaryAsHex)
 					{
-						entryStream.CopyTo(ms);
+						using (var ms = new MemoryStream())
+						{
+							entryStream.CopyTo(ms);
 
-						var data = ms.ToArray();
-						var sb = new System.Text.StringBuilder();
-						for (int i = 0; i < data.Length; i++)
-							sb.Append(data[i].ToString("X2"));
+							var data = ms.ToArray();
+							var sb = new System.Text.StringBuilder();
+							for (int i = 0; i < data.Length; i++)
+								sb.Append(data[i].ToString("X2"));
 
-						return sb.ToString().ToLower();
+							return sb.ToString().ToLower();
+						}
 					}
-				}
-				else
-				{
-					string result = null;
+					else
+					{
+						string result = null;
 
-					using (var sr = new StreamReader(entryStream))
-						result = sr.ReadToEnd();
+						using (var sr = new StreamReader(entryStream))
+							result = sr.ReadToEnd();
 
-					return result;
+						return result;
+					}
 				}
 			}
 		}
