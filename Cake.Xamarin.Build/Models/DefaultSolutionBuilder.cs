@@ -44,6 +44,7 @@ namespace Cake.Xamarin.Build
         public virtual string OutputDirectory { get; set; }
         public virtual bool RestoreComponents { get; set; }
 		public virtual bool AlwaysUseMSBuild { get; set; } = false;
+		public virtual Core.Diagnostics.Verbosity? Verbosity { get; set; }
 
         public Action PreBuildAction { get;set; }
         public Action PostBuildAction { get;set; }
@@ -93,6 +94,9 @@ namespace Cake.Xamarin.Build
                     if (CakeContext.GetOperatingSystem() == PlatformFamily.OSX)
                         c.ToolPath = "/Library/Frameworks/Mono.framework/Versions/Current/Commands/msbuild";
 
+                    if (Verbosity.HasValue)
+                        c.Verbosity = Verbosity.Value;
+
                     if (MaxCpuCount.HasValue)
                         c.MaxCpuCount = MaxCpuCount.Value;
                     c.Configuration = Configuration;
@@ -114,6 +118,9 @@ namespace Cake.Xamarin.Build
             {
                 CakeContext.DotNetBuild(solution, c =>
                 {
+                    if (Verbosity.HasValue)
+                        c.Verbosity = Verbosity.Value;
+
                     c.Configuration = Configuration;
                     if (!string.IsNullOrEmpty(Platform))
                         c.Properties["Platform"] = new[] { Platform };
