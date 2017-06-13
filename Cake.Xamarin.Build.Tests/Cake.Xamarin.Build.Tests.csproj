@@ -50,6 +50,9 @@
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.3.6.0\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Fakes\FakeCakeArguments.cs" />
@@ -59,10 +62,15 @@
     <Compile Include="TestFixtureBase.cs" />
     <Compile Include="BuildEnvironmentTests.cs" />
     <Compile Include="ZipTests.cs" />
+    <Compile Include="VersionsTests.cs" />
+    <Compile Include="AndroidAarTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="TestData\test.aar">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />

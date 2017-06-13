@@ -389,9 +389,47 @@ namespace Cake.Xamarin.Build
             info.OperatingSystem = GetOperatingSystem(context);
 			info.OperatingSystemName = GetOperatingSystemName(context);
             info.OperatingSystemVersion = GetOperatingSystemVersion(context);
+			info.DotNetCoreVersions = context.GetDotNetCoreVersions();
+
+			if (info.OperatingSystem == PlatformFamily.Windows)
+				info.VisualStudioInstalls = GetVisualStudioInstalls(context);
+			else
+				info.VisualStudioInstalls = new List<VisualStudioInfo>();
 
             return info;
         }
+
+		/// <summary>
+		/// Gets the visual studio installs.
+		/// </summary>
+		/// <returns>The visual studio installs.</returns>
+		/// <param name="context">Context.</param>
+		[CakeMethodAlias]
+		public static List<VisualStudioInfo> GetVisualStudioInstalls(this ICakeContext context)
+		{
+			var tool = new VSWhereTool(context.FileSystem, context.Environment, context.ProcessRunner, context.Tools);
+			return tool.GetVisualStudioInstalls(null);
+		}
+
+		/// <summary>
+		/// Gets the visual studio installs.
+		/// </summary>
+		/// <returns>The visual studio installs.</returns>
+		/// <param name="context">Context.</param>
+		/// <param name="settings">Settings.</param>
+		[CakeMethodAlias]
+		public static List<VisualStudioInfo> GetVisualStudioInstalls(this ICakeContext context, VSWhereToolSettings settings = null)
+		{
+			var tool = new VSWhereTool(context.FileSystem, context.Environment, context.ProcessRunner, context.Tools);
+			return tool.GetVisualStudioInstalls(settings);
+		}
+
+		[CakeMethodAlias]
+		public static DotNetCoreVersionInfo GetDotNetCoreVersions (this ICakeContext context, DotNetCoreVersionToolSettings settings = null)
+		{
+			var tool = new DotNetCoreVersionTool(context.FileSystem, context.Environment, context.ProcessRunner, context.Tools);
+			return tool.GetDotNetCoreVersions(settings);
+		}
 
 		/// <summary>
 		/// Logs System Information
@@ -418,6 +456,41 @@ namespace Cake.Xamarin.Build
 				logInfo(context, "XCode Version:         {0}", info.XCodeVersion ?? "Not Detected");
 				logInfo(context, "CocoaPods Version:     {0}", info.CocoaPodsVersion ?? "Not Detected");
 			}
+
+			if (info.DotNetCoreVersions != null)
+			{
+				if (info.DotNetCoreVersions.RuntimeVersions.Any()) {
+					logInfo(context, ".NET Core Runtime Versions:");
+					foreach (var ver in info.DotNetCoreVersions.RuntimeVersions)
+						logInfo(context, "    {0}", ver);
+				}
+
+				if (info.DotNetCoreVersions.SdkVersions.Any())
+				{
+					logInfo(context, ".NET Core SDK Versions:");
+					foreach (var ver in info.DotNetCoreVersions.SdkVersions)
+						logInfo(context, "    {0}", ver);
+				}
+			}
+
+			if (info.OperatingSystem == PlatformFamily.Windows)
+			{
+				if (info.VisualStudioInstalls != null && info.VisualStudioInstalls.Any())
+				{
+					foreach (var vs in info.VisualStudioInstalls)
+					{
+						logInfo(context, "{0}", vs.DisplayName);
+						logInfo(context, "         {0}", vs.InstallationVersion);
+						logInfo(context, "         {0}", vs.InstallationPath);
+						logInfo(context, "         {0}", vs.InstallDate);
+					}
+				}
+				else
+				{
+					logInfo(context, "{0} not installed", "Visual Studio");
+				}
+			}
+
 
 			logInfo(context, "------------------------------");
 		}
@@ -607,6 +680,13 @@ namespace Cake.Xamarin.Build
 			var zipFilename = zipFile.MakeAbsolute(context.Environment).FullPath;
 
 			return PartialZip.ReadEntryText(zipFilename, zipEntryName, readBinaryAsHex);
+		}
+
+
+		[CakeMethodAlias]
+		public static void FixAndroidAarFile(this ICakeContext context, FilePath aarFile, string artifactId, bool fixManifestPackageNames = true, bool extractProguardConfigs = true)
+		{
+			AndroidAarFixer.FixAarFile(aarFile.MakeAbsolute(context.Environment).FullPath, artifactId, fixManifestPackageNames, extractProguardConfigs);
 		}
 	}
 }
