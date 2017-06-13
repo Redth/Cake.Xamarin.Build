@@ -71,21 +71,24 @@ namespace Cake.Xamarin.Build
 			builder.Append("-all");
 			builder.Append("-format json");
 
-
-			var p = RunProcess(settings, builder, new ProcessSettings
+			try
 			{
-				RedirectStandardOutput = true,
-			});
+				var p = RunProcess(settings, builder, new ProcessSettings
+				{
+					RedirectStandardOutput = true,
+				});
 
-			p.WaitForExit();
+				p.WaitForExit();
 
-			var json = string.Join (Environment.NewLine, p.GetStandardOutput());
+				var json = string.Join(Environment.NewLine, p.GetStandardOutput());
 
-			using (var ms = new MemoryStream(Encoding.Unicode.GetBytes(json)))
-			{
-				var jsonSerializer = new DataContractJsonSerializer(typeof(List<VisualStudioInfo>));
+				using (var ms = new MemoryStream(Encoding.Unicode.GetBytes(json)))
+				{
+					var jsonSerializer = new DataContractJsonSerializer(typeof(List<VisualStudioInfo>));
 
-				results = (List<VisualStudioInfo>)jsonSerializer.ReadObject(ms);
+					results = (List<VisualStudioInfo>)jsonSerializer.ReadObject(ms);
+				}
+			} catch (Cake.Core.CakeException) {
 			}
 
 			if (results == null)
