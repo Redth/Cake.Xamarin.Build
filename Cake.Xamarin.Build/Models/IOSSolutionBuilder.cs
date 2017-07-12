@@ -19,13 +19,13 @@ namespace Cake.Xamarin.Build
                 return;
             }
 
-            if (CakeContext.IsRunningOnUnix ()) { 
-                CakeContext.MDToolBuild (solution, c => {
-                    c.Configuration = Configuration;
-                }); 
-            } else { 
-                base.RunBuild (solution); 
-            } 
+            //if (CakeContext.IsRunningOnUnix ()) { 
+            //    CakeContext.MDToolBuild (solution, c => {
+            //        c.Configuration = Configuration;
+            //    }); 
+            //} else { 
+            base.RunBuild (solution); 
+            //} 
         } 
     }
 }
