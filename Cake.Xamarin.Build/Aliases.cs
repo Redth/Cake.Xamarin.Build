@@ -688,5 +688,56 @@ namespace Cake.Xamarin.Build
 		{
 			AndroidAarFixer.FixAarFile(aarFile.MakeAbsolute(context.Environment).FullPath, artifactId, fixManifestPackageNames, extractProguardConfigs);
 		}
+
+		[CakeMethodAlias]
+		public static void RunCakeBuilds (this ICakeContext context, Dictionary<FilePath, string[]> scriptsAndTargets, FilePath testResults = null)
+		{
+			const string EV_CAKE_EXE_PATH = "CAKE_EXE_PATH";
+			const string EV_CAKE_BUILD_INFO_PATH = "CAKE_BUILD_INFO_PATH";
+
+
+			// Get cake.exe path, set to environment variable
+			// create temp file with scripts and targets format
+			// set temp file to env. variable
+			// run nunit
+			if (testResults == null)
+				testResults = new FilePath("./cakebuildresults.xml");
+
+			// Find path to cake.exe that we can set for the runner to use for invoking the script
+			//var p = System.Diagnostics.Process.GetCurrentProcess();
+			//var cakeExePath = new FilePath(p.Modules[0].FileName);
+
+			var cakeExePath = context.GetFiles("./**/Cake.exe").FirstOrDefault();
+
+			// Get our .dll containing the tests, in this case it's this assembly
+			var testFile = context.GetFiles("./**/Cake.Xamarin.Build.CakeBuilder.dll").FirstOrDefault();
+
+			//var testFile = new FilePath (System.Reflection.Assembly.GetCallingAssembly().Location);
+
+			// Temp file to save the build info to
+			var buildInfoPath = new FilePath("./cakebuildinfo-" + Guid.NewGuid().ToString() + ".txt").MakeAbsolute(context.Environment).FullPath;
+			// Write out the build scripts and targets in the format the test case source expects
+			var buildInfo = string.Empty;
+			foreach (var kvp in scriptsAndTargets)
+				buildInfo += kvp.Key.MakeAbsolute(context.Environment) + ":" + string.Join(",", kvp.Value) + Environment.NewLine;
+			System.IO.File.WriteAllText(buildInfoPath, buildInfo);
+
+			context.Information("Cake.exe Path: {0}", cakeExePath);
+			context.Information("Build Info Path: {0}", buildInfoPath);
+
+			// Run NUnit
+			Cake.Common.Tools.NUnit.NUnitAliases.NUnit(context, new[] { testFile }, new Common.Tools.NUnit.NUnitSettings
+			{
+				Include = "CakeBuilder",
+				EnvironmentVariables = new Dictionary<string, string> {
+					{ EV_CAKE_EXE_PATH, cakeExePath.MakeAbsolute(context.Environment).FullPath },
+					{ EV_CAKE_BUILD_INFO_PATH, buildInfoPath },
+				},
+				//ResultFormat = "nunit2",
+				ResultsFile = testResults
+			});
+
+			context.DeleteFile(new FilePath(buildInfoPath));
+		}
 	}
 }

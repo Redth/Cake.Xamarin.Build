@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cake.Xamarin.Build", "Cake.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cake.Xamarin.Build.Tests", "Cake.Xamarin.Build.Tests\Cake.Xamarin.Build.Tests.csproj", "{4892D81A-AD1A-442B-B456-B1BF6754C75B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cake.Xamarin.Build.CakeBuilder", "Cake.Xamarin.Build.CakeBuilder\Cake.Xamarin.Build.CakeBuilder.csproj", "{B2E25618-E69C-4DF6-9FD9-1F892404BCE4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,5 +21,9 @@ Global
 		{9F390A1D-29CB-4D80-84C6-EF7D1A283DD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F390A1D-29CB-4D80-84C6-EF7D1A283DD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F390A1D-29CB-4D80-84C6-EF7D1A283DD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2E25618-E69C-4DF6-9FD9-1F892404BCE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2E25618-E69C-4DF6-9FD9-1F892404BCE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2E25618-E69C-4DF6-9FD9-1F892404BCE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2E25618-E69C-4DF6-9FD9-1F892404BCE4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
