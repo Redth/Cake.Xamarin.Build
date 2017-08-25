@@ -1,42 +1,39 @@
+#tool nuget:?package=NUnit.ConsoleRunner
+#tool "nuget:?package=ILRepack"
+
 var sln = "./Cake.Xamarin.Build.sln";
 var nuspec = "./Cake.Xamarin.Build.nuspec";
+var nugetVersion = Argument ("nuget_version", EnvironmentVariable ("NUGET_VERSION") ?? "1.0.0.0");
+var target = Argument ("target", "build");
+var configuration = Argument("configuration", EnvironmentVariable ("CONFIGURATION") ?? "Release");
 
-var nugetVersion = "1.0.6";
-
-var target = Argument ("target", "lib");
-
-Task ("lib").Does (() =>
+Task ("build").Does (() =>
 {
 	NuGetRestore (sln);
-
-	DotNetBuild (sln, c => c.Configuration = "Release");
+	DotNetBuild (sln, c => c.Configuration = configuration);
 });
 
-Task ("nuget").IsDependentOn ("lib").Does (() =>
+Task ("package").IsDependentOn("build").Does (() =>
 {
-	CreateDirectory ("./nupkg/");
+	EnsureDirectoryExists ("./output/");
+
+	ILRepack ("./output/Cake.Xamarin.Build.CakeBuilder.dll", 
+		"./Cake.Xamarin.Build.CakeBuilder/bin/" + configuration + "/Cake.Xamarin.Build.CakeBuilder.dll",
+		new FilePath[] { "./Cake.Xamarin.Build.CakeBuilder/bin/" + configuration + "/nunit.framework.dll" },
+		new ILRepackSettings {
+			Libs = new List<FilePath> {
+				"./Cake.Xamarin.Build.CakeBuilder/bin/" + configuration,
+			}
+		});
+
+	CopyFile ("./Cake.Xamarin.Build/bin/" + configuration + "/Cake.Xamarin.Build.dll", "./output/Cake.Xamarin.Build.dll");
+	CopyFile ("./Cake.Xamarin.Build/bin/" + configuration + "/Cake.Xamarin.Build.xml", "./output/Cake.Xamarin.Build.xml");
+
+	CopyFile ("./Cake.Xamarin.Build/bin/" + configuration + "/ICSharpCode.SharpZipLib.dll", "./output/ICSharpCode.SharpZipLib.dll");
 
 	NuGetPack (nuspec, new NuGetPackSettings {
-		Verbosity = NuGetVerbosity.Detailed,
-		OutputDirectory = "./nupkg/",
+		OutputDirectory = "./output/",
 		Version = nugetVersion,
-		// NuGet messes up path on mac, so let's add ./ in front again
-		BasePath = "././",
-	});
-});
-
-Task ("push").IsDependentOn ("nuget").Does (() =>
-{
-	// Get the newest (by last write time) to publish
-	var newestNupkg = GetFiles ("nupkg/*.nupkg")
-		.OrderBy (f => new System.IO.FileInfo (f.FullPath).LastWriteTimeUtc)
-		.LastOrDefault ();
-
-	var apiKey = TransformTextFile ("./.nugetapikey").ToString ();
-
-	NuGetPush (newestNupkg, new NuGetPushSettings {
-		Verbosity = NuGetVerbosity.Detailed,
-		ApiKey = apiKey
 	});
 });
 
@@ -44,11 +41,14 @@ Task ("clean").Does (() =>
 {
 	CleanDirectories ("./**/bin");
 	CleanDirectories ("./**/obj");
-
-	CleanDirectories ("./**/Components");
-	CleanDirectories ("./**/tools");
-
-	DeleteFiles ("./**/*.apk");
 });
+
+Task("test").IsDependentOn("package").Does(() =>
+{
+	NUnit3("./**/bin/"+ configuration + "/*.Tests.dll");
+});
+
+Task ("Default")
+	.IsDependentOn ("test");
 
 RunTarget (target);

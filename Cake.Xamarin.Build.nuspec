@@ -31,12 +31,12 @@
    </metadata>
 
    <files>
-      <file src="Cake.Xamarin.Build/bin/Release/Cake.Xamarin.Build.dll" target="lib/net45" />
-      <file src="Cake.Xamarin.Build/bin/Release/Cake.Xamarin.Build.xml" target="lib/net45" />
+      <file src="output/Cake.Xamarin.Build.dll" target="lib/net45" />
+      <file src="output/Cake.Xamarin.Build.xml" target="lib/net45" />
 
-      <file src="Cake.Xamarin.Build.CakeBuilder/bin/Release/Cake.Xamarin.Build.CakeBuilder.dll" target="build/net45" />
+      <file src="output/Cake.Xamarin.Build.CakeBuilder.dll" target="build/net45" />
 
-      <file src="libs/ICSharpCode.SharpZipLib.dll" target="lib/net45" />
+      <file src="output/ICSharpCode.SharpZipLib.dll" target="lib/net45" />
 
       <file src="THIRD-PARTY-NOTICES.txt" target="THIRD-PARTY-NOTICES.txt" />
    </files>
