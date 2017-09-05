@@ -23,8 +23,6 @@
       <tags></tags>
 
       <dependencies>
-         <dependency id="Cake.Core" version="0.16.2" />
-         <dependency id="Cake.Common" version="0.16.2" />
          <dependency id="Cake.Xamarin" version="1.3.0.11" />
          <dependency id="Cake.XCode" version="2.0.9.0" />
       </dependencies>
