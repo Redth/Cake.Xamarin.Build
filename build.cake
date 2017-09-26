@@ -10,7 +10,7 @@ var configuration = Argument("configuration", EnvironmentVariable ("CONFIGURATIO
 Task ("build").Does (() =>
 {
 	NuGetRestore (sln);
-	DotNetBuild (sln, c => c.Configuration = configuration);
+	MSBuild (sln, c => c.Configuration = configuration);
 });
 
 Task ("package").IsDependentOn("build").Does (() =>
@@ -21,15 +21,15 @@ Task ("package").IsDependentOn("build").Does (() =>
 		"./Cake.Xamarin.Build.CakeBuilder/bin/" + configuration + "/Cake.Xamarin.Build.CakeBuilder.dll",
 		new FilePath[] { "./Cake.Xamarin.Build.CakeBuilder/bin/" + configuration + "/nunit.framework.dll" },
 		new ILRepackSettings {
-			Libs = new List<FilePath> {
+			Libs = new List<DirectoryPath> {
 				"./Cake.Xamarin.Build.CakeBuilder/bin/" + configuration,
 			}
 		});
 
 	CopyFile ("./Cake.Xamarin.Build/bin/" + configuration + "/Cake.Xamarin.Build.dll", "./output/Cake.Xamarin.Build.dll");
 	CopyFile ("./Cake.Xamarin.Build/bin/" + configuration + "/Cake.Xamarin.Build.xml", "./output/Cake.Xamarin.Build.xml");
-
-	CopyFile ("./Cake.Xamarin.Build/bin/" + configuration + "/ICSharpCode.SharpZipLib.dll", "./output/ICSharpCode.SharpZipLib.dll");
+	CopyFile ("./Cake.Xamarin.Build.CakeBuilder/bin/" + configuration + "/Cake.Xamarin.Build.CakeBuilder.dll", "./output/Cake.Xamarin.Build.CakeBuilder.dll");
+	CopyFile ("./Cake.Xamarin.Build.CakeBuilder/bin/" + configuration + "/Cake.Xamarin.Build.CakeBuilder.dll", "./output/Cake.Xamarin.Build.CakeBuilder.dll");
 
 	NuGetPack (nuspec, new NuGetPackSettings {
 		OutputDirectory = "./output/",
