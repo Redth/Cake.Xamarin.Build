@@ -1,4 +1,3 @@
-using Xunit.Sdk;
 using System;
 using Cake.Core.IO;
 using Cake.Xamarin.Build;

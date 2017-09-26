@@ -18,24 +18,24 @@
       <projectUrl>https://github.com/Redth/Cake.Xamarin.Build</projectUrl>
       <iconUrl>https://raw.githubusercontent.com/Redth/Cake.Xamarin.Build/master/icon.png</iconUrl>
       <requireLicenseAcceptance>false</requireLicenseAcceptance>
-      <copyright>Copyright (c) Xamarin 2015-2016</copyright>
+      <copyright>Copyright (c) Xamarin 2015-2017</copyright>
       <releaseNotes>Initial Release</releaseNotes>
       <tags></tags>
 
       <dependencies>
-         <dependency id="Cake.Xamarin" version="1.3.0.11" />
-         <dependency id="Cake.XCode" version="2.0.9.0" />
+         <dependency id="Cake.Core" version="0.22.0" />
+         <dependency id="Cake.Common" version="0.22.0" />
+         <dependency id="Cake.Xamarin" version="2.0.0" />
+         <dependency id="Cake.XCode" version="3.0.0" />
+         <dependency id="SharpZipLib" version="0.86.0" />
+         <dependency id="NUnit" version="3.8.1" />
       </dependencies>
    </metadata>
 
    <files>
-      <file src="output/Cake.Xamarin.Build.dll" target="lib/net45" />
-      <file src="output/Cake.Xamarin.Build.xml" target="lib/net45" />
+      <file src="output/Cake.Xamarin.Build.dll" target="lib/net46" />
+      <file src="output/Cake.Xamarin.Build.xml" target="lib/net46" />
 
-      <file src="output/Cake.Xamarin.Build.CakeBuilder.dll" target="build/net45" />
-
-      <file src="output/ICSharpCode.SharpZipLib.dll" target="lib/net45" />
-
-      <file src="THIRD-PARTY-NOTICES.txt" target="THIRD-PARTY-NOTICES.txt" />
+      <file src="output/Cake.Xamarin.Build.CakeBuilder.dll" target="build/net46" />
    </files>
 </package>

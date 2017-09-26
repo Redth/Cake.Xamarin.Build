@@ -7,7 +7,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Cake.FileHelpers.Tests</RootNamespace>
     <AssemblyName>Cake.FileHelpers.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -29,30 +29,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="Cake.Core">
-      <HintPath>..\packages\Cake.Core.0.16.2\lib\net45\Cake.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="xunit.abstractions">
-      <HintPath>..\packages\xunit.abstractions.2.0.1-rc2\lib\net35\xunit.abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="xunit.core">
-      <HintPath>..\packages\xunit.extensibility.core.2.2.0-beta2-build3300\lib\net45\xunit.core.dll</HintPath>
-    </Reference>
-    <Reference Include="xunit.execution.desktop">
-      <HintPath>..\packages\xunit.extensibility.execution.2.2.0-beta2-build3300\lib\net45\xunit.execution.desktop.dll</HintPath>
-    </Reference>
-    <Reference Include="Cake.Testing">
-      <HintPath>..\packages\Cake.Testing.0.16.2\lib\net45\Cake.Testing.dll</HintPath>
-    </Reference>
-    <Reference Include="xunit.assert">
-      <HintPath>..\packages\xunit.assert.2.2.0-beta2-build3300\lib\netstandard1.0\xunit.assert.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>..\packages\NUnit.3.6.0\lib\net45\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Cake.Common" Version="0.22.0" />
+    <PackageReference Include="Cake.Core" Version="0.22.0" />
+    <PackageReference Include="Cake.Testing" Version="0.22.0" />
+    <PackageReference Include="Cake.Xamarin" Version="2.0.0" />
+    <PackageReference Include="Cake.XCode" Version="3.0.0" />
+    <PackageReference Include="SharpZipLib" Version="0.86.0" />
+    <PackageReference Include="NUnit" Version="3.8.1" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Fakes\FakeCakeArguments.cs" />
@@ -67,7 +55,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="TestData\test.aar">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

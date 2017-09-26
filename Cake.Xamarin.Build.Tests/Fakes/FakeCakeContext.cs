@@ -9,18 +9,17 @@ namespace Cake.Xamarin.Build.Tests.Fakes
     public class FakeCakeContext
     {
         ICakeContext context;
-        FakeLog log;
+        FakeCakeLog log;
         DirectoryPath testsDir;
 
         public FakeCakeContext()
         {
-            testsDir = new DirectoryPath(
-                System.IO.Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory));
+            testsDir = new DirectoryPath(System.IO.Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory));
 
+            log = new FakeCakeLog();
             var fileSystem = new FileSystem();
-            var environment = new CakeEnvironment(new CakePlatform(), new CakeRuntime());
+            var environment = new CakeEnvironment(new CakePlatform(), new CakeRuntime(), log);
             var globber = new Globber(fileSystem, environment);
-            log = new FakeLog();
             var args = new FakeCakeArguments();
             var processRunner = new ProcessRunner(environment, log);
             var registry = new WindowsRegistry();

@@ -3,7 +3,7 @@
 
 var sln = "./Cake.Xamarin.Build.sln";
 var nuspec = "./Cake.Xamarin.Build.nuspec";
-var nugetVersion = Argument ("nuget_version", EnvironmentVariable ("NUGET_VERSION") ?? "1.0.0.0");
+var nugetVersion = Argument ("nuget_version", EnvironmentVariable ("NUGET_VERSION") ?? "0.0.0.0");
 var target = Argument ("target", "build");
 var configuration = Argument("configuration", EnvironmentVariable ("CONFIGURATION") ?? "Release");
 
