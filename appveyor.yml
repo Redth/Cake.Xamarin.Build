@@ -1,4 +1,5 @@
 version: 3.0.{build}
+image: Visual Studio 2017
 configuration: Release
 install:
 - set NUGET_VERSION=%APPVEYOR_BUILD_VERSION%
