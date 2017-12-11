@@ -36,6 +36,8 @@ namespace Cake.Xamarin.Build
 
         public BuildPlatforms BuildsOn { get; set; }
 
+        public FilePath MSBuildToolPath { get; set; }
+
         public Dictionary<string, List<string>> Properties { get; set; }
         public IEnumerable<string> Targets { get; set; }
         public virtual string Configuration { get; set; }
@@ -95,6 +97,10 @@ namespace Cake.Xamarin.Build
                     if (CakeContext.GetOperatingSystem() == PlatformFamily.OSX)
                         c.ToolPath = "/Library/Frameworks/Mono.framework/Versions/Current/Commands/msbuild";
 
+                    // Override tool path completely if it's specified explicitly
+                    if (MSBuildToolPath != null)
+                        c.ToolPath = MSBuildToolPath;
+ 
                     if (Verbosity.HasValue)
                         c.Verbosity = Verbosity.Value;
 
