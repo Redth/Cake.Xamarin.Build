@@ -23,7 +23,7 @@ namespace Cake.Xamarin.Build
             Platform = "\"Any CPU\"";
             Configuration = "Release";
             Properties = new Dictionary<string, List<string>> ();
-			AlwaysUseMSBuild = true;
+            AlwaysUseMSBuild = true;
         }
 
         public int? MaxCpuCount { get; set; }
@@ -44,8 +44,8 @@ namespace Cake.Xamarin.Build
         public OutputFileCopy [] OutputFiles { get; set; }
         public virtual string OutputDirectory { get; set; }
         public virtual bool RestoreComponents { get; set; }
-		public virtual bool AlwaysUseMSBuild { get; set; }
-		public virtual Core.Diagnostics.Verbosity? Verbosity { get; set; }
+        public virtual bool AlwaysUseMSBuild { get; set; }
+        public virtual Core.Diagnostics.Verbosity? Verbosity { get; set; }
 
         public Action PreBuildAction { get;set; }
         public Action PostBuildAction { get;set; }
