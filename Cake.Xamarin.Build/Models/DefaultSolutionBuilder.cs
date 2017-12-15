@@ -25,7 +25,7 @@ namespace Cake.Xamarin.Build
             Properties = new Dictionary<string, List<string>> ();
             AlwaysUseMSBuild = true;
 
-            var overrideMsbuildPath = System.Environment.EnvironmentVariable ("CAKE_OVERRIDE_MSBUILD_PATH");
+            var overrideMsbuildPath = System.Environment.GetEnvironmentVariable ("CAKE_OVERRIDE_MSBUILD_PATH");
             if (!string.IsNullOrEmpty (overrideMsbuildPath))
                 MSBuildToolPath = new FilePath (overrideMsbuildPath);
         }
