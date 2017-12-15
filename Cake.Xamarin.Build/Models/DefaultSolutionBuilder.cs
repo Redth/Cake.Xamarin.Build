@@ -24,6 +24,10 @@ namespace Cake.Xamarin.Build
             Configuration = "Release";
             Properties = new Dictionary<string, List<string>> ();
             AlwaysUseMSBuild = true;
+
+            var overrideMsbuildPath = System.Environment.EnvironmentVariable ("CAKE_OVERRIDE_MSBUILD_PATH");
+            if (!string.IsNullOrEmpty (overrideMsbuildPath))
+                MSBuildToolPath = new FilePath (overrideMsbuildPath);
         }
 
         public int? MaxCpuCount { get; set; }
