@@ -1,71 +1,20 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4892D81A-AD1A-442B-B456-B1BF6754C75B}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>Cake.FileHelpers.Tests</RootNamespace>
-    <AssemblyName>Cake.FileHelpers.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="Cake.Core" Version="0.26.1" />
+    <PackageReference Include="Cake.Testing" Version="0.26.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
+    <PackageReference Include="xunit" Version="2.3.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
+    <PackageReference Include="Cake.Common" Version="0.26.1" />
   </ItemGroup>
+
   <ItemGroup>
-    <PackageReference Include="Cake.Common" Version="0.22.0" />
-    <PackageReference Include="Cake.Core" Version="0.22.0" />
-    <PackageReference Include="Cake.Testing" Version="0.22.0" />
-    <PackageReference Include="Cake.Xamarin" Version="2.0.0" />
-    <PackageReference Include="Cake.XCode" Version="3.0.0" />
-    <PackageReference Include="SharpZipLib" Version="0.86.0" />
-    <PackageReference Include="NUnit" Version="3.8.1" />
+    <ProjectReference Include="..\Cake.Xamarin.Build\Cake.Xamarin.Build.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Fakes\FakeCakeArguments.cs" />
-    <Compile Include="Fakes\FakeCakeContext.cs" />
-    <Compile Include="Fakes\FakeLog.cs" />
-    <Compile Include="DownloadFileTests.cs" />
-    <Compile Include="TestFixtureBase.cs" />
-    <Compile Include="BuildEnvironmentTests.cs" />
-    <Compile Include="ZipTests.cs" />
-    <Compile Include="VersionsTests.cs" />
-    <Compile Include="AndroidAarTests.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <None Include="TestData\test.aar">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Cake.Xamarin.Build\Cake.Xamarin.Build.csproj">
-      <Project>{9F390A1D-29CB-4D80-84C6-EF7D1A283DD3}</Project>
-      <Name>Cake.Xamarin.Build</Name>
-    </ProjectReference>
-  </ItemGroup>
+
 </Project>
