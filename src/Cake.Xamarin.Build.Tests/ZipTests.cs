@@ -1,40 +1,40 @@
-﻿using System;
-using System.Linq;
-using Cake.Core.IO;
-using Cake.Xamarin.Build;
-using NUnit.Framework;
+﻿//using System;
+//using System.Linq;
+//using Cake.Core.IO;
+//using Cake.Xamarin.Build;
+//using Xunit;
 
-namespace Cake.Xamarin.Build.Tests.Fakes
-{
-	public class ZipTests : TestFixtureBase
-	{
-		[Test]
-		public void FindZipEntries()
-		{
-			var url = "https://github.com/Redth/Cake.Xamarin.Build/archive/master.zip";
+//namespace Cake.Xamarin.Build.Tests.Fakes
+//{
+//    public class ZipTests : TestFixtureBase
+//    {
+//        [Fact]
+//        public void FindZipEntries()
+//        {
+//            var url = "https://github.com/Redth/Cake.Xamarin.Build/archive/master.zip";
 
-			var destFile = new FilePath("./repo.zip");
+//            var destFile = new FilePath("./repo.zip");
 
-			Cake.DownloadFile(url, destFile, new DownloadFileSettings
-			{
-				UserAgent = "curl/7.43.0"
-			});
+//            Cake.DownloadFile(url, destFile, new DownloadFileSettings
+//            {
+//                UserAgent = "curl/7.43.0"
+//            });
 
-			var fileInfo = new System.IO.FileInfo(destFile.MakeAbsolute(Cake.Environment).FullPath);
+//            var fileInfo = new System.IO.FileInfo(destFile.MakeAbsolute(Cake.Environment).FullPath);
 
-			Assert.True(fileInfo.Exists);
-			Assert.True(fileInfo.Length > 1024);
+//            Assert.True(fileInfo.Exists);
+//            Assert.True(fileInfo.Length > 1024);
 
-			var entries = Cake.FindZipEntries(destFile);
+//            var entries = Cake.FindZipEntries(destFile);
 
-			var readmeEntry = entries.FirstOrDefault(e => e.EntryName.Contains("README.md"));
+//            var readmeEntry = entries.FirstOrDefault(e => e.EntryName.Contains("README.md"));
 
-			Assert.IsNotNull(readmeEntry);
+//            Assert.IsNotNull(readmeEntry);
 
-			var text = Cake.ReadZipEntryText(destFile, readmeEntry.EntryName, false);
+//            var text = Cake.ReadZipEntryText(destFile, readmeEntry.EntryName, false);
 
-			Assert.IsNotEmpty(text);
-		}
-	}
-}
+//            Assert.IsNotEmpty(text);
+//        }
+//    }
+//}
 
