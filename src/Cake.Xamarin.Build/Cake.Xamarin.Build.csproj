@@ -30,8 +30,4 @@
     <PackageReference Include="Cake.XCode" Version="4.0.0" />
     <PackageReference Include="Cake.Xamarin" Version="3.0.0" />
   </ItemGroup>
- 
-  <ItemGroup>
-    <Compile Remove="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
 </Project>

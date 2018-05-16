@@ -690,7 +690,7 @@ namespace Cake.Xamarin.Build
 		}
 
 		[CakeMethodAlias]
-		public static void RunCakeBuilds (this ICakeContext context, Dictionary<FilePath, string[]> scriptsAndTargets, FilePath testResults = null)
+		public static void RunCakeBuilds (this ICakeContext context, Dictionary<FilePath, string[]> scriptsAndTargets, DirectoryPath testResultsDir = null)
 		{
 			const string EV_CAKE_EXE_PATH = "CAKE_EXE_PATH";
 			const string EV_CAKE_BUILD_INFO_PATH = "CAKE_BUILD_INFO_PATH";
@@ -700,8 +700,8 @@ namespace Cake.Xamarin.Build
 			// create temp file with scripts and targets format
 			// set temp file to env. variable
 			// run nunit
-			if (testResults == null)
-				testResults = new FilePath("./cakebuildresults.xml");
+			if (testResultsDir == null)
+				testResultsDir = new DirectoryPath("./");
 
 			// Find path to cake.exe that we can set for the runner to use for invoking the script
 			//var p = System.Diagnostics.Process.GetCurrentProcess();
@@ -726,15 +726,14 @@ namespace Cake.Xamarin.Build
 			context.Information("Build Info Path: {0}", buildInfoPath);
 
 			// Run NUnit
-			Cake.Common.Tools.NUnit.NUnitAliases.NUnit(context, new[] { testFile }, new Common.Tools.NUnit.NUnitSettings
+			Cake.Common.Tools.XUnit.XUnit2Aliases.XUnit2(context, new[] { testFile }, new Common.Tools.XUnit.XUnit2Settings
 			{
-				Include = "CakeBuilder",
+				NUnitReport = true,
 				EnvironmentVariables = new Dictionary<string, string> {
 					{ EV_CAKE_EXE_PATH, cakeExePath.MakeAbsolute(context.Environment).FullPath },
 					{ EV_CAKE_BUILD_INFO_PATH, buildInfoPath },
 				},
-				//ResultFormat = "nunit2",
-				ResultsFile = testResults
+				OutputDirectory = testResultsDir
 			});
 
 			context.DeleteFile(new FilePath(buildInfoPath));

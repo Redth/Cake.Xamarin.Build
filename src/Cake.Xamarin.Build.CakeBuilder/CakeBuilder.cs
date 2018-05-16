@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using NUnit.Framework;
+using Xunit;
 using System.IO;
 
 namespace Cake.Xamarin.Build
 {
-	[TestFixture]
-	[Category("CakeBuilder")]
 	public class CakeBuilder
 	{
 		internal const string EV_CAKE_EXE_PATH = "CAKE_EXE_PATH";
@@ -22,6 +20,7 @@ namespace Cake.Xamarin.Build
 			Console.WriteLine("CakeBuilder: CTOR");
 
 			workingDir = Directory.GetCurrentDirectory();
+			Console.WriteLine("CakeBuilder: WorkingDir: " + workingDir);
 
 			cakeExePath = Environment.GetEnvironmentVariable(EV_CAKE_EXE_PATH);
 			if (string.IsNullOrEmpty(cakeExePath))
@@ -35,7 +34,8 @@ namespace Cake.Xamarin.Build
 			Console.WriteLine("CakeBuilder: Build Info Path: {0}", cakeBuildInfoPath);
 		}
 
-		[Test, TestCaseSource("GetBuildInfo")]
+		[Theory]
+		[MemberData("GetBuildInfo")]
 		public void Build(string script, string target)
 		{
 			var fullScript = Path.Combine(workingDir, script);
@@ -46,13 +46,13 @@ namespace Cake.Xamarin.Build
 
 			p.WaitForExit();
 
-			Assert.AreEqual(0, p.ExitCode);
+			Assert.Equal(0, p.ExitCode);
 		}
 
-		public object[] GetBuildInfo ()
+		public static IEnumerable<object[]> GetBuildInfo ()
 		{
 			Console.WriteLine("CakeBuilder: GetBuildInfo -> {0}", cakeBuildInfoPath);
-			var results = new List<object>();
+			var results = new List<object[]>();
 
 			var lines = File.ReadAllLines(cakeBuildInfoPath);
 			foreach (var line in lines) {
@@ -70,7 +70,7 @@ namespace Cake.Xamarin.Build
 			}
 
 			Console.WriteLine("CakeBuilder: {0}", results);
-			return results.ToArray();
+			return results;
 		}
 	}
 }
