@@ -93,7 +93,7 @@ namespace Cake.Xamarin.Build
             public const string Clean = "clean";
         }
         
-        public static void SetupXamarinBuildTasks (ICakeContext cake, BuildSpec buildSpec, IReadOnlyList<Cake.Core.CakeTask> tasks, Func<string, CakeTaskBuilder<ActionTask>> addTaskDelegate)
+        public static void SetupXamarinBuildTasks (ICakeContext cake, BuildSpec buildSpec, IReadOnlyList<Cake.Core.CakeTask> tasks, Func<string, CakeTaskBuilder> addTaskDelegate)
         {
             buildSpec.Init(cake);
 

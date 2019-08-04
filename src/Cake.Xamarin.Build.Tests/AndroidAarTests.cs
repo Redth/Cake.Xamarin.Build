@@ -13,7 +13,7 @@ namespace Cake.Xamarin.Build.Tests.Fakes
         [Fact]
         public void FixAar_Test()
         {
-            var src = new FilePath("../../TestData/test.aar");
+            var src = new FilePath("./TestData/test.aar");
             var aar = new FilePath("./tmp.aar");
 
             var srcFullPath = src.MakeAbsolute(Cake.Environment).FullPath;
