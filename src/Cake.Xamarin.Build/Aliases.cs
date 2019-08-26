@@ -41,7 +41,7 @@ namespace Cake.Xamarin.Build
         /// <param name="tasks">The currently executing cake script's Tasks list</param>
         /// <param name="addTaskDelegate">The delegate used to add a new Task to the currently executing cake script</param>
         [CakeMethodAlias]
-        public static void SetupXamarinBuildTasks(this ICakeContext context, BuildSpec buildSpec, IReadOnlyList<Cake.Core.CakeTask> tasks, Func<string, CakeTaskBuilder> addTaskDelegate)
+        public static void SetupXamarinBuildTasks(this ICakeContext context, BuildSpec buildSpec, IReadOnlyList<Cake.Core.ICakeTaskInfo> tasks, Func<string, CakeTaskBuilder> addTaskDelegate)
         {
             SetupXamarinBuildTasks(context, buildSpec, new XamarinBuildTaskSettings(), tasks, addTaskDelegate);
         }
@@ -53,8 +53,9 @@ namespace Cake.Xamarin.Build
         /// <param name="buildSpec">The build spec info to setup with</param>
         /// <param name="settings">The settings to use for setting up the build tasks</param>
         /// <param name="tasks">The currently executing cake script's Tasks list</param>
-        /// <param name="addTaskDelegate">The delegate used to add a new Task to the currently executing cake script</param>        [CakeMethodAlias]
-        public static void SetupXamarinBuildTasks (this ICakeContext context, BuildSpec buildSpec, XamarinBuildTaskSettings settings, IReadOnlyList<Cake.Core.CakeTask> tasks, Func<string, CakeTaskBuilder> addTaskDelegate)
+        /// <param name="addTaskDelegate">The delegate used to add a new Task to the currently executing cake script</param>
+        [CakeMethodAlias]
+        public static void SetupXamarinBuildTasks (this ICakeContext context, BuildSpec buildSpec, XamarinBuildTaskSettings settings, IReadOnlyList<Cake.Core.ICakeTaskInfo> tasks, Func<string, CakeTaskBuilder> addTaskDelegate)
         {
             if (settings.LogEnvironmentVariables)
             {
