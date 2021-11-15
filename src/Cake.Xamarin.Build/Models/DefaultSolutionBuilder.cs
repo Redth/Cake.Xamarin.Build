@@ -1,33 +1,30 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Cake.Common;
 using Cake.Common.Diagnostics;
 using Cake.Common.IO;
-using Cake.Common.Tools;
 using Cake.Common.Tools.MSBuild;
 using Cake.Common.Tools.NuGet;
 using Cake.Common.Tools.NuGet.Restore;
 using Cake.Core;
 using Cake.Core.IO;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Cake.Xamarin.Build
 {
     public class DefaultSolutionBuilder : ISolutionBuilder
     {
-        public DefaultSolutionBuilder ()
+        public DefaultSolutionBuilder()
         {
             OutputDirectory = "./output";
             RestoreComponents = false;
             BuildsOn = BuildPlatforms.Mac;
             Platform = "\"Any CPU\"";
             Configuration = "Release";
-            Properties = new Dictionary<string, List<string>> ();
-            AlwaysUseMSBuild = true;
+            Properties = new Dictionary<string, List<string>>();
 
-            var overrideMsbuildPath = System.Environment.GetEnvironmentVariable ("CAKE_OVERRIDE_MSBUILD_PATH");
-            if (!string.IsNullOrEmpty (overrideMsbuildPath))
-                MSBuildToolPath = new FilePath (overrideMsbuildPath);
+            var overrideMsbuildPath = System.Environment.GetEnvironmentVariable("CAKE_OVERRIDE_MSBUILD_PATH");
+            if (!string.IsNullOrEmpty(overrideMsbuildPath))
+                MSBuildToolPath = new FilePath(overrideMsbuildPath);
         }
 
         public int? MaxCpuCount { get; set; }
@@ -47,16 +44,15 @@ namespace Cake.Xamarin.Build
         public virtual string Configuration { get; set; }
         public virtual string Platform { get; set; }
 
-        public OutputFileCopy [] OutputFiles { get; set; }
+        public OutputFileCopy[] OutputFiles { get; set; }
         public virtual string OutputDirectory { get; set; }
         public virtual bool RestoreComponents { get; set; }
-        public virtual bool AlwaysUseMSBuild { get; set; }
         public virtual Core.Diagnostics.Verbosity? Verbosity { get; set; }
 
-        public Action PreBuildAction { get;set; }
-        public Action PostBuildAction { get;set; }
+        public Action PreBuildAction { get; set; }
+        public Action PostBuildAction { get; set; }
 
-        public void Init (ICakeContext cakeContext, BuildSpec buildSpec)
+        public void Init(ICakeContext cakeContext, BuildSpec buildSpec)
         {
             CakeContext = cakeContext;
             BuildSpec = buildSpec;
@@ -64,92 +60,70 @@ namespace Cake.Xamarin.Build
 
         protected virtual bool BuildsOnCurrentPlatform
         {
-            get {
-                return BuildPlatformUtil.BuildsOnCurrentPlatform(CakeContext, BuildsOn);       
+            get
+            {
+                return BuildPlatformUtil.BuildsOnCurrentPlatform(CakeContext, BuildsOn);
             }
         }
 
-        public virtual void BuildSolution ()
-        {       
-            if (!BuildsOnCurrentPlatform) {
-                CakeContext.Information ("Solution is not configured to build on this platform: {0}", SolutionPath);
+        public virtual void BuildSolution()
+        {
+            if (!BuildsOnCurrentPlatform)
+            {
+                CakeContext.Information("Solution is not configured to build on this platform: {0}", SolutionPath);
                 return;
             }
 
             if (PreBuildAction != null)
-                PreBuildAction ();
+                PreBuildAction();
 
             if (RestoreComponents)
-                CakeContext.RestoreComponents (SolutionPath, new XamarinComponentRestoreSettings ());
+                CakeContext.RestoreComponents(SolutionPath, new XamarinComponentRestoreSettings());
 
-            CakeContext.NuGetRestore (SolutionPath, new NuGetRestoreSettings { 
-                Source = BuildSpec.NuGetSources.Select (s => s.Url).ToList ()
+            CakeContext.NuGetRestore(SolutionPath, new NuGetRestoreSettings
+            {
+                Source = BuildSpec.NuGetSources.Select(s => s.Url).ToList()
             });
 
-            RunBuild (SolutionPath);
+            RunBuild(SolutionPath);
 
             if (PostBuildAction != null)
-                PostBuildAction ();
+                PostBuildAction();
         }
 
-        public virtual void RunBuild (FilePath solution)
+        public virtual void RunBuild(FilePath solution)
         {
-            if (CakeContext.IsRunningOnWindows() || AlwaysUseMSBuild)
+            CakeContext.MSBuild(solution, c =>
             {
-                CakeContext.MSBuild(solution, c =>
+                if (CakeContext.GetOperatingSystem() == PlatformFamily.OSX)
+                    c.ToolPath = "/Library/Frameworks/Mono.framework/Versions/Current/Commands/msbuild";
+
+                // Override tool path completely if it's specified explicitly
+                if (MSBuildToolPath != null)
+                    c.ToolPath = MSBuildToolPath;
+
+                if (Verbosity.HasValue)
+                    c.Verbosity = Verbosity.Value;
+
+                if (MaxCpuCount.HasValue)
+                    c.MaxCpuCount = MaxCpuCount.Value;
+                c.Configuration = Configuration;
+                if (!string.IsNullOrEmpty(Platform))
+                    c.Properties["Platform"] = new[] { Platform };
+                if (Targets != null && Targets.Any())
                 {
-                    if (CakeContext.GetOperatingSystem() == PlatformFamily.OSX)
-                        c.ToolPath = "/Library/Frameworks/Mono.framework/Versions/Current/Commands/msbuild";
-
-                    // Override tool path completely if it's specified explicitly
-                    if (MSBuildToolPath != null)
-                        c.ToolPath = MSBuildToolPath;
- 
-                    if (Verbosity.HasValue)
-                        c.Verbosity = Verbosity.Value;
-
-                    if (MaxCpuCount.HasValue)
-                        c.MaxCpuCount = MaxCpuCount.Value;
-                    c.Configuration = Configuration;
-                    if (!string.IsNullOrEmpty(Platform))
-                       c.Properties["Platform"] = new[] { Platform };
-                    if (Targets != null && Targets.Any())
-                    {
-                       foreach (var t in Targets)
-                           c.Targets.Add(t);
-                    }
-                    if (Properties != null && Properties.Any())
-                    {
-                       foreach (var kvp in Properties)
-                           c.Properties.Add(kvp.Key, kvp.Value);
-                    }
-                });
-            }
-            else
-            {
-                CakeContext.DotNetBuild(solution, c =>
+                    foreach (var t in Targets)
+                        c.Targets.Add(t);
+                }
+                if (Properties != null && Properties.Any())
                 {
-                    if (Verbosity.HasValue)
-                        c.Verbosity = Verbosity.Value;
-
-                    c.Configuration = Configuration;
-                    if (!string.IsNullOrEmpty(Platform))
-                        c.Properties["Platform"] = new[] { Platform };
-                    if (Targets != null && Targets.Any())
-                    {
-                        foreach (var t in Targets)
-                            c.Targets.Add(t);
-                    }
-                    if (Properties != null && Properties.Any())
-                    {
-                        foreach (var kvp in Properties)
-                            c.Properties.Add(kvp.Key, kvp.Value);
-                    }
-                });
-            }
+                    foreach (var kvp in Properties)
+                        c.Properties.Add(kvp.Key, kvp.Value);
+                }
+            });
         }
 
-        public virtual void CopyOutput ()
+        public virtual void CopyOutput()
         {
             if (OutputFiles == null)
                 return;
@@ -157,33 +131,35 @@ namespace Cake.Xamarin.Build
             if (!BuildsOnCurrentPlatform)
                 return;
 
-            foreach (var fileCopy in OutputFiles) {
+            foreach (var fileCopy in OutputFiles)
+            {
                 FilePath targetFileName;
 
                 var targetDir = fileCopy.ToDirectory ?? OutputDirectory;
-                CakeContext.CreateDirectory (targetDir);
+                CakeContext.CreateDirectory(targetDir);
 
                 if (fileCopy.NewFileName != null)
-                    targetFileName = targetDir.CombineWithFilePath (fileCopy.NewFileName);
+                    targetFileName = targetDir.CombineWithFilePath(fileCopy.NewFileName);
                 else
-                    targetFileName = targetDir.CombineWithFilePath (fileCopy.FromFile.GetFilename ());  
-                
-                var srcAbs = CakeContext.MakeAbsolute (fileCopy.FromFile);
-                var destAbs = CakeContext.MakeAbsolute (targetFileName);
+                    targetFileName = targetDir.CombineWithFilePath(fileCopy.FromFile.GetFilename());
 
-                var sourceTime = System.IO.File.GetLastAccessTime (srcAbs.ToString ());
-                var destTime = System.IO.File.GetLastAccessTime (destAbs.ToString ());
+                var srcAbs = CakeContext.MakeAbsolute(fileCopy.FromFile);
+                var destAbs = CakeContext.MakeAbsolute(targetFileName);
 
-                CakeContext.Information ("Target Dir: Exists? {0}, {1}", CakeContext.DirectoryExists (targetDir), targetDir);
+                var sourceTime = System.IO.File.GetLastAccessTime(srcAbs.ToString());
+                var destTime = System.IO.File.GetLastAccessTime(destAbs.ToString());
 
-                CakeContext.Information ("Copy From: Exists? {0}, Dir Exists? {1}, Modified: {2}, {3}", 
-                    CakeContext.FileExists (srcAbs), CakeContext.DirectoryExists (srcAbs.GetDirectory ()), sourceTime, srcAbs);
-                CakeContext.Information ("Copy To:   Exists? {0}, Dir Exists? {1}, Modified: {2}, {3}", 
-                    CakeContext.FileExists (destAbs), CakeContext.DirectoryExists (destAbs.GetDirectory ()), destTime, destAbs);
+                CakeContext.Information("Target Dir: Exists? {0}, {1}", CakeContext.DirectoryExists(targetDir), targetDir);
 
-                if (sourceTime > destTime || !CakeContext.FileExists (destAbs)) {
-                    CakeContext.Information ("Copying File: {0} to {1}", srcAbs, targetDir);
-                    CakeContext.CopyFileToDirectory (srcAbs, targetDir);
+                CakeContext.Information("Copy From: Exists? {0}, Dir Exists? {1}, Modified: {2}, {3}",
+                    CakeContext.FileExists(srcAbs), CakeContext.DirectoryExists(srcAbs.GetDirectory()), sourceTime, srcAbs);
+                CakeContext.Information("Copy To:   Exists? {0}, Dir Exists? {1}, Modified: {2}, {3}",
+                    CakeContext.FileExists(destAbs), CakeContext.DirectoryExists(destAbs.GetDirectory()), destTime, destAbs);
+
+                if (sourceTime > destTime || !CakeContext.FileExists(destAbs))
+                {
+                    CakeContext.Information("Copying File: {0} to {1}", srcAbs, targetDir);
+                    CakeContext.CopyFileToDirectory(srcAbs, targetDir);
                 }
             }
         }

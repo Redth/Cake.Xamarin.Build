@@ -18,14 +18,6 @@ namespace Cake.Xamarin.Build.Tests.Fakes
         public TestFixtureBase()
         {
             context = new FakeCakeContext();
-
-            var dp = new DirectoryPath("./testdata");
-            var d = context.CakeContext.FileSystem.GetDirectory(dp);
-
-            if (d.Exists)
-                d.Delete(true);
-
-            d.Create();
         }
 
         public void Dispose()

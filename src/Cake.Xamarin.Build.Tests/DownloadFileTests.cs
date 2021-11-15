@@ -10,7 +10,7 @@ namespace Cake.Xamarin.Build.Tests.Fakes
         [Fact]
         public void Download_FacebookSDK()
         {
-            var url = "https://origincache.facebook.com/developers/resources/?id=FacebookSDKs-iOS-20160210.zip";
+            var url = "https://lookaside.facebook.com/developers/resources/?id=FacebookSDKs-iOS-20160210.zip";
 
             var destFile = new FilePath("./fbsdk.zip");
 

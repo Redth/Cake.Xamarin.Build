@@ -12,3 +12,7 @@ xtc-email
 .DS_Store
 *.user
 .vs/
+
+#Cake
+tools/**
+BuildArtifacts/

@@ -6,7 +6,7 @@ namespace Cake.Xamarin.Build.Tests.Fakes
 {
     public class FakeCakeDataService : ICakeDataService
     {
-        List<object> values = new List<object>();
+        readonly List<object> values = new List<object>();
 
         public void Add<TData>(TData value) where TData : class
         {

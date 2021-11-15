@@ -36,7 +36,7 @@ namespace Cake.Xamarin.Build
                     return envVar;
             }
 
-            // Check PATH paths 
+            // Check PATH paths
             if (cake.IsRunningOnWindows ()) {
                 // Last resort try path
                 var envPath = cake.Environment.GetEnvironmentVariable ("path");
@@ -92,7 +92,7 @@ namespace Cake.Xamarin.Build
             public const string CleanBase = "clean-base";
             public const string Clean = "clean";
         }
-        
+
         public static void SetupXamarinBuildTasks (ICakeContext cake, BuildSpec buildSpec, IReadOnlyList<Cake.Core.ICakeTaskInfo> tasks, Func<string, CakeTaskBuilder> addTaskDelegate)
         {
             buildSpec.Init(cake);
@@ -108,12 +108,12 @@ namespace Cake.Xamarin.Build
 
             if (!tasks.Any (tsk => tsk.Name == Names.Libraries))
                 Task (Names.Libraries).IsDependentOn (Names.Externals).IsDependentOn (Names.LibrariesBase);
-            
+
             Task (Names.SamplesBase).Does (() => {
                     foreach (var s in buildSpec.Samples) {
                         s.BuildSolution ();
                         s.CopyOutput ();
-                    }   
+                    }
                 });
 
             if (!tasks.Any (tsk => tsk.Name == Names.Samples))
@@ -125,7 +125,7 @@ namespace Cake.Xamarin.Build
 
             if (!tasks.Any (tsk => tsk.Name == Names.Nuget))
                 Task (Names.Nuget).IsDependentOn (Names.Libraries).IsDependentOn (Names.NugetBase);
-            
+
             Task (Names.ComponentBase).IsDependentOn (Names.Nuget).Does (() => {
                 foreach (var c in buildSpec.Components)
                 {
@@ -165,7 +165,7 @@ namespace Cake.Xamarin.Build
                 var gitPath = ResolveGitPath (cake);
                 if (gitPath == null)
                     throw new System.IO.FileNotFoundException ("Could not locate git executable");
-                
+
                 foreach (var gitDep in buildSpec.GitRepoDependencies) {
                     if (!cake.DirectoryExists (gitDep.Path))
                         cake.StartProcess (gitPath, "clone " + gitDep.Url + " " + cake.MakeAbsolute (gitDep.Path).FullPath);
@@ -180,17 +180,17 @@ namespace Cake.Xamarin.Build
                 cake.CleanDirectories ("./**/obj");
 
                 if (cake.DirectoryExists ("./output"))
-                    cake.DeleteDirectory ("./output", true);
+                    cake.DeleteDirectory ("./output", new DeleteDirectorySettings() { Recursive = true });
 
                 if (buildSpec.GitRepoDependencies != null && buildSpec.GitRepoDependencies.Any ()) {
                     foreach (var gitDep in buildSpec.GitRepoDependencies) {
                         if (cake.DirectoryExists (gitDep.Path))
-                            cake.DeleteDirectory (gitDep.Path, true);
-                    }   
+                            cake.DeleteDirectory (gitDep.Path, new DeleteDirectorySettings() { Recursive = true });
+                    }
                 }
 
                 if (cake.DirectoryExists ("./tools"))
-                    cake.DeleteDirectory ("./tools", true);
+                    cake.DeleteDirectory ("./tools", new DeleteDirectorySettings() { Recursive = true });
             });
 
             if (!tasks.Any (tsk => tsk.Name == Names.Clean))
