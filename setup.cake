@@ -1,4 +1,4 @@
-#load nuget:?package=Cake.Recipe&version=1.0.0
+#load nuget:?package=Cake.Recipe&version=2.2.1
 
 Environment.SetVariableNames();
 
@@ -9,11 +9,10 @@ BuildParameters.SetParameters(context: Context,
                             repositoryOwner: "redth",
                             repositoryName: "Cake.Xamarin.Build",
                             appVeyorAccountName: "redth",
-                            shouldRunDotNetCorePack: true,
-                            shouldRunInspectCode: false,
-                            shouldRunDupFinder: false,
                             shouldRunCodecov: false,
-                            shouldPostToSlack: false,
+                            shouldRunDotNetCorePack: true,
+                            shouldRunDupFinder: false,
+                            shouldRunInspectCode: false,
                             shouldRunIntegrationTests: false,
                             testFilePattern: "DO_NOT_RUN_TESTS");
 

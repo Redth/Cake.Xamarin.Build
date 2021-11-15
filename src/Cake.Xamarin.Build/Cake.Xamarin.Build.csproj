@@ -8,26 +8,26 @@
   <PropertyGroup>
     <PackageId>Cake.Xamarin.Build</PackageId>
     <Title>Cake.Xamarin.Build</Title>
-    <PackageTags>Cake Script Build</PackageTags>
+    <PackageTags>Cake Script Build Xamarin cake-addin</PackageTags>
     <Authors>Redth</Authors>
     <Owners>Redth</Owners>
     <Description>
          NOT RECOMMENDED FOR PUBLIC USE: Cake Build addon to provide Aliases for Xamarin product build scripts.
-         
-         This addin exists to help with Xamarin product build scripts.  
-         
-         While you are free to use it, it is not recommended or supported for public use.  
-      </Description>
-      <Summary>NOT RECOMMENDED FOR PUBLIC USE: Cake Build addon to provide Aliases for Xamarin product build scripts.</Summary>
-      <PackageLicenseUrl>https://raw.githubusercontent.com/Redth/Cake.Xamarin.Build/master/LICENSE.md</PackageLicenseUrl>
-      <PackageProjectUrl>https://github.com/Redth/Cake.Xamarin.Build</PackageProjectUrl>
-      <PackageIconUrl>https://raw.githubusercontent.com/Redth/Cake.Xamarin.Build/master/icon.png</PackageIconUrl>
+
+         This addin exists to help with Xamarin product build scripts.
+
+         While you are free to use it, it is not recommended or supported for public use.
+     </Description>
+     <Summary>NOT RECOMMENDED FOR PUBLIC USE: Cake Build addon to provide Aliases for Xamarin product build scripts.</Summary>
+     <PackageLicenseUrl>https://raw.githubusercontent.com/Redth/Cake.Xamarin.Build/master/LICENSE.md</PackageLicenseUrl>
+     <PackageProjectUrl>https://github.com/Redth/Cake.Xamarin.Build</PackageProjectUrl>
+     <PackageIconUrl>https://cdn.jsdelivr.net/gh/cake-contrib/graphics/png/addin/cake-contrib-addin-medium.png</PackageIconUrl>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Cake.Core" Version="0.33.0" PrivateAssets="All" />
-    <PackageReference Include="Cake.Common" Version="0.33.0" PrivateAssets="All" />
-    <PackageReference Include="Cake.XCode" Version="4.1.0" PrivateAssets="All" />
-    <PackageReference Include="Cake.Xamarin" Version="3.0.1" PrivateAssets="All" />
+    <PackageReference Include="Cake.Core" Version="1.0.0" PrivateAssets="All" />
+    <PackageReference Include="Cake.Common" Version="1.0.0" PrivateAssets="All" />
+    <PackageReference Include="Cake.XCode" Version="5.0.0" PrivateAssets="All" />
+    <PackageReference Include="Cake.Xamarin" Version="4.0.0" PrivateAssets="All" />
   </ItemGroup>
 </Project>

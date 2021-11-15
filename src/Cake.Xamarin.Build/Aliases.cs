@@ -230,7 +230,7 @@ namespace Cake.Xamarin.Build
 
                 // Move the built static lib to a place where we can lipo it later
                 context.MoveFile (
-                    staticLib, 
+                    staticLib,
                     libToLipo);
 
                 libsToLipo.Add (libToLipo);
@@ -239,7 +239,7 @@ namespace Cake.Xamarin.Build
             // Make sure the universal target dir exists
             context.EnsureDirectoryExists (projectDir.Combine ("build").Combine ("universal"));
 
-            // Copy the framework contents from iphoneos to the universal folder 
+            // Copy the framework contents from iphoneos to the universal folder
             // This gets us all the header files and such
             context.CopyDirectory (projectDir.Combine ("build").Combine (config + "-iphoneos"),
                                    projectDir.Combine ("build").Combine ("universal"));
@@ -274,10 +274,10 @@ namespace Cake.Xamarin.Build
             projectRoot = projectRoot ?? workingDirectory;
 
             if (context.DirectoryExists(workingDirectory.Combine("build")))
-                context.DeleteDirectory(workingDirectory.Combine("build"), true);
+                context.DeleteDirectory(workingDirectory.Combine("build"), new DeleteDirectorySettings() { Recursive = true });
 
             if (context.DirectoryExists(workingDirectory.Combine(projectRoot)))
-                context.DeleteDirectory(workingDirectory.Combine(projectRoot), true);
+                context.DeleteDirectory(workingDirectory.Combine(projectRoot), new DeleteDirectorySettings() { Recursive = true });
 
             context.DeleteFiles(System.IO.Path.Combine(workingDirectory.ToString(), "*.a"));
         }
@@ -572,7 +572,7 @@ namespace Cake.Xamarin.Build
 					return PlatformFamily.OSX;
 			}
 			catch { }
-			
+
 			return context.Environment.Platform.Family;
 		}
 
@@ -617,7 +617,7 @@ namespace Cake.Xamarin.Build
 
             if (version == null && revision == null)
                 return null;
-            
+
             return version ?? "?" + "." + revision ?? "?";
         }
 
@@ -630,7 +630,7 @@ namespace Cake.Xamarin.Build
 
 			if (!System.IO.File.Exists(versionFile))
 				return null;
-			
+
             var version = System.IO.File.ReadAllText(versionFile)?.Trim();
 
             return version;

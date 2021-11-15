@@ -13,15 +13,8 @@ namespace Cake.Xamarin.Build.Tests.Fakes
         [Fact]
         public void FixAar_Test()
         {
-            var src = new FilePath("./TestData/test.aar");
-            var aar = new FilePath("./tmp.aar");
-
-            var srcFullPath = src.MakeAbsolute(Cake.Environment).FullPath;
+            var aar = new FilePath("./TestData/test.aar");
             var aarFullPath = aar.MakeAbsolute(Cake.Environment).FullPath;
-
-            if (File.Exists(aarFullPath))
-                File.Delete(aarFullPath);
-            File.Copy(srcFullPath, aarFullPath);
 
             Cake.FixAndroidAarFile(aarFullPath, "design");
 
@@ -46,8 +39,9 @@ namespace Cake.Xamarin.Build.Tests.Fakes
                         {
                             var xdoc = XDocument.Load(xmlReader);
 
-                            Assert.False(xdoc.Document.Descendants()
-                                         .Any(elem => elem.Attribute(xns + "name")?.Value?.StartsWith(".", StringComparison.Ordinal) ?? false));
+                            Assert.DoesNotContain(
+                                xdoc.Document.Descendants(),
+                                elem => elem.Attribute(xns + "name")?.Value?.StartsWith(".", StringComparison.Ordinal) ?? false);
                         }
                     }
                 }
